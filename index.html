@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mehfil Wear</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+font-family:Arial,sans-serif;
+background:#faf7f2;
+color:#29221e
+}
+header{
+background:#211b18;
+color:white;
+padding:18px 6%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:sticky;
+top:0;
+z-index:10
+}
+.logo{
+font-family:Georgia,serif;
+font-size:25px;
+letter-spacing:3px
+}
+nav a{
+color:white;
+text-decoration:none;
+margin:0 12px
+}
+.cart{
+background:#c9a16b;
+color:white;
+border:0;
+padding:10px 16px;
+cursor:pointer
+}
+.hero{
+min-height:520px;
+display:flex;
+align-items:center;
+padding:8%;
+color:white;
+background:
+linear-gradient(#0008,#0008),
+url("https://images.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=1600&q=80")
+center/cover
+}
+.hero h1{
+font:60px Georgia,serif
+}
+.hero p{
+margin:20px 0;
+font-size:18px
+}
+.btn{
+background:#c9a16b;
+color:white;
+border:0;
+padding:14px 25px;
+cursor:pointer
+}
+section{
+padding:65px 6%
+}
+.title{
+text-align:center;
+margin-bottom:35px
+}
+.title h2{
+font:40px Georgia,serif
+}
+.products{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px
+}
+.product{
+background:white;
+box-shadow:0 3px 15px #0001
+}
+.product img{
+width:100%;
+height:330px;
+object-fit:cover
+}
+.info{
+padding:15px
+}
+.info h3{
+font:20px Georgia,serif;
+margin-bottom:8px
+}
+.price{
+color:#a47745;
+font-weight:bold;
+margin-bottom:15px
+}
+.info button{
+width:100%;
+padding:12px;
+background:#211b18;
+color:white;
+border:0;
+cursor:pointer
+}
+.features{
+background:#eee5da;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+text-align:center;
+gap:20px
+}
+.features h3{
+margin:10px 0
+}
+footer{
+background:#211b18;
+color:white;
+text-align:center;
+padding:45px
+}
+
+/* CART */
+.cartbox{
+position:fixed;
+right:-430px;
+top:0;
+width:430px;
+max-width:100%;
+height:100%;
+background:white;
+z-index:100;
+padding:25px;
+overflow:auto;
+transition:.3s;
+box-shadow:-5px 0 20px #0004
+}
+.cartbox.open{
+right:0
+}
+.close{
+float:right;
+border:0;
+background:none;
+font-size:28px;
+cursor:pointer
+}
+.cartitem{
+display:flex;
+gap:12px;
+padding:15px 0;
+border-bottom:1px solid #ddd
+}
+.cartitem img{
+width:70px;
+height:80px;
+object-fit:cover
+}
+.remove{
+border:0;
+background:none;
+color:red;
+cursor:pointer
+}
+.total{
+font-size:20px;
+font-weight:bold;
+margin:25px 0
+}
+
+/* ORDER FORM */
+.order{
+display:none;
+position:fixed;
+inset:0;
+background:#0009;
+z-index:200;
+align-items:center;
+justify-content:center;
+padding:15px
+}
+.order.open{
+display:flex
+}
+.form{
+background:white;
+width:500px;
+max-width:100%;
+padding:30px
+}
+.form h2{
+font:30px Georgia,serif;
+margin-bottom:20px
+}
+.form input,
+.form textarea{
+width:100%;
+padding:13px;
+margin:7px 0;
+border:1px solid #ccc
+}
+.form textarea{
+height:90px
+}
+.form button{
+width:100%;
+margin-top:10px
+}
+
+/* MOBILE */
+@media(max-width:900px){
+.products{
+grid-template-columns:repeat(2,1fr)
+}
+.features{
+grid-template-columns:repeat(2,1fr)
+}
+nav{
+display:none
+}
+}
+@media(max-width:600px){
+.hero h1{
+font-size:45px
+}
+.products{
+gap:10px
+}
+.product img{
+height:240px
+}
+section{
+padding:50px 5%
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+MEHFIL WEAR
+</div>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#products">Collection</a>
+<a href="#about">About</a>
+</nav>
+
+<button class="cart" onclick="openCart()">
+🛒 Cart (<span id="count">0</span>)
+</button>
+
+</header>
+
+
+<!-- HERO -->
+
+<section class="hero" id="home">
+
+<div>
+
+<h1>
+Har Libaas<br>
+Mein Khaas.
+</h1>
+
+<p>
+Premium Pakistani suits for every special moment.
+</p>
+
+<button class="btn"
+onclick="location.href='#products'">
+SHOP NOW
+</button>
+
+</div>
+
+</section>
+
+
+<!-- PRODUCTS -->
+
+<section id="products">
+
+<div class="title">
+<p>MEHFIL WEAR</p>
+<h2>Our Collection</h2>
+</div>
+
+<div class="products" id="productsBox"></div>
+
+</section>
+
+
+<!-- FEATURES -->
+
+<section class="features" id="about">
+
+<div>
+<h2>✦</h2>
+<h3>Premium Quality</h3>
+<p>Beautiful fabrics.</p>
+</div>
+
+<div>
+<h2>◇</h2>
+<h3>Elegant Designs</h3>
+<p>Modern & traditional.</p>
+</div>
+
+<div>
+<h2>🚚</h2>
+<h3>Delivery</h3>
+<p>Across Pakistan.</p>
+</div>
+
+<div>
+<h2>↺</h2>
+<h3>Easy Exchange</h3>
+<p>Simple exchange.</p>
+</div>
+
+</section>
+
+
+<footer>
+
+<h2>MEHFIL WEAR</h2>
+<p>Har Libaas Mein Khaas.</p>
+<br>
+<p>© 2026 Mehfil Wear</p>
+
+</footer>
+
+
+<!-- CART -->
+
+<div class="cartbox" id="cartbox">
+
+<button class="close"
+onclick="closeCart()">×</button>
+
+<h2>Your Cart</h2>
+
+<div id="cartItems"></div>
+
+<div class="total">
+Total: Rs. <span id="total">0</span>
+</div>
+
+<button class="btn"
+style="width:100%"
+onclick="openOrder()">
+
+PLACE ORDER
+
+</button>
+
+</div>
+
+
+<!-- ORDER FORM -->
+
+<div class="order" id="order">
+
+<div class="form">
+
+<button class="close"
+onclick="closeOrder()">×</button>
+
+<h2>Complete Your Order</h2>
+
+<input
+id="name"
+placeholder="Your Name">
+
+<input
+id="phone"
+placeholder="Phone Number">
+
+<textarea
+id="address"
+placeholder="Complete Delivery Address"></textarea>
+
+<textarea
+id="note"
+placeholder="Order Note (Optional)"></textarea>
+
+<button
+class="btn"
+onclick="sendOrder()">
+
+ORDER ON WHATSAPP
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================
+   PRODUCTS
+   YAHAN APNI PICS + PRICE CHANGE KARO
+===================================== */
+
+const products=[
+
+{
+name:"Noor Embroidered Suit",
+price:5490,
+image:"https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Rang-e-Mehfil 3 Piece",
+price:6290,
+image:"https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Adaa Lawn 2 Piece",
+price:3990,
+image:"https://images.unsplash.com/photo-1583391733981-8497b8d3c8d2?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Riwaayat Luxury Suit",
+price:7490,
+image:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
+}
+
+];
+
+
+/* CART */
+
+let cart=[];
+
+
+function displayProducts(){
+
+let html="";
+
+products.forEach((p,i)=>{
+
+html+=`
+
+<div class="product">
+
+<img src="${p.image}">
+
+<div class="info">
+
+<h3>${p.name}</h3>
+
+<div class="price">
+Rs. ${p.price.toLocaleString()}
+</div>
+
+<button onclick="add(${i})">
+ADD TO CART
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("productsBox").innerHTML=html;
+
+}
+
+
+function add(i){
+
+cart.push(products[i]);
+
+update();
+
+openCart();
+
+}
+
+
+function update(){
+
+document.getElementById("count").innerText=cart.length;
+
+let html="";
+let total=0;
+
+cart.forEach((p,i)=>{
+
+total+=p.price;
+
+html+=`
+
+<div class="cartitem">
+
+<img src="${p.image}">
+
+<div>
+
+<b>${p.name}</b>
+
+<p>
+Rs. ${p.price.toLocaleString()}
+</p>
+
+<button
+class="remove"
+onclick="remove(${i})">
+
+Remove
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("cartItems").innerHTML=
+html || "<p>Your cart is empty.</p>";
+
+document.getElementById("total").innerText=
+total.toLocaleString();
+
+}
+
+
+function remove(i){
+
+cart.splice(i,1);
+
+update();
+
+}
+
+
+function openCart(){
+
+document.getElementById("cartbox")
+.classList.add("open");
+
+}
+
+
+function closeCart(){
+
+document.getElementById("cartbox")
+.classList.remove("open");
+
+}
+
+
+/* ORDER FORM */
+
+function openOrder(){
+
+if(cart.length===0){
+
+alert("Please add a product first.");
+
+return;
+
+}
+
+document.getElementById("order")
+.classList.add("open");
+
+}
+
+
+function closeOrder(){
+
+document.getElementById("order")
+.classList.remove("open");
+
+}
+
+
+/* =====================================
+   WHATSAPP ORDER
+===================================== */
+
+function sendOrder(){
+
+const name=
+document.getElementById("name").value;
+
+const phone=
+document.getElementById("phone").value;
+
+const address=
+document.getElementById("address").value;
+
+const note=
+document.getElementById("note").value;
+
+
+if(!name || !phone || !address){
+
+alert("Please enter your name, phone and address.");
+
+return;
+
+}
+
+
+/* YOUR WHATSAPP NUMBER */
+
+const YOUR_WHATSAPP_NUMBER=
+"923022911313";
+
+
+let message=
+"🛍️ *NEW ORDER - MEHFIL WEAR*%0A%0A";
+
+message+=
+"👤 Name: "+name+"%0A";
+
+message+=
+"📱 Phone: "+phone+"%0A";
+
+message+=
+"📍 Address: "+address+"%0A";
+
+
+if(note){
+
+message+=
+"📝 Note: "+note+"%0A";
+
+}
+
+
+message+="%0A*ORDER DETAILS*%0A";
+
+
+let total=0;
+
+
+cart.forEach((p,i)=>{
+
+message+=
+(i+1)+". "+
+p.name+
+" - Rs. "+
+p.price.toLocaleString()+
+"%0A";
+
+total+=p.price;
+
+});
+
+
+message+=
+"%0A💰 *TOTAL: Rs. "+
+total.toLocaleString()+
+"*";
+
+
+const url=
+"https://wa.me/"+
+YOUR_WHATSAPP_NUMBER+
+"?text="+message;
+
+
+window.open(url,"_blank");
+
+}
+
+
+/* START */
+
+displayProducts();
+
+update();
+
+</script>
+
+</body>
+</html>

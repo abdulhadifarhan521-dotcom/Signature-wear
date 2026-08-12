@@ -247,7 +247,7 @@ padding:50px 5%
 <header>
 
 <div class="logo">
-Signature WEAR
+ Signature Wear
 </div>
 
 <nav>
@@ -336,7 +336,7 @@ SHOP NOW
 <footer>
 
 <h2>Signature WEAR</h2>
-<p>Har Libaas Mein Khaas.</p>
+<p>Your style Your signature.</p>
 <br>
 <p>© 2026 Signature Wear</p>
 
@@ -602,21 +602,79 @@ document.getElementById("order")
 /* =====================================
    WHATSAPP ORDER
 ===================================== */
+function sendOrder() {
 
-function sendOrder(){
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const note = document.getElementById("note").value.trim();
 
-const name=
+  if (!name || !phone || !address) {
+    alert("Please enter your name, phone and address.");
+    return;
+  }
+
+  let total = 0;
+
+  const items = cart.map(p => {
+    total += p.price;
+
+    return {
+      name: p.name,
+      price: p.price
+    };
+  });
+
+  fetch("http://localhost:3000/order", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: name,
+      phone: phone,
+      address: address,
+      note: note,
+      items: items,
+      total: total
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+
+    if (data.success) {
+      alert("Order placed successfully!");
+
+      if (typeof closeOrder === "function") {
+        closeOrder();
+      }
+    } else {
+      alert("Order could not be placed.");
+    }
+
+  })
+  .catch(error => {
+    console.error("Order error:", error);
+    alert("Unable to connect to the order server.");
+  });
+
+
+
+ 
+
+
+
+const name =
 document.getElementById("name").value;
 
-const phone=
+const phone =
 document.getElementById("phone").value;
 
-const address=
+const address =
 document.getElementById("address").value;
 
-const note=
+const note =
 document.getElementById("note").value;
-
 
 if(!name || !phone || !address){
 
@@ -626,67 +684,66 @@ return;
 
 }
 
+let total = 0;
 
-/* YOUR WHATSAPP NUMBER */
+const items = cart.map(p => {
 
-const YOUR_WHATSAPP_NUMBER=
-"923373036984";
+total += p.price;
 
-
-let message=
-"🛍️ *NEW ORDER - Signature WEAR*%0A%0A";
-
-message+=
-"👤 Name: "+name+"%0A";
-
-message+=
-"📱 Phone: "+phone+"%0A";
-
-message+=
-"📍 Address: "+address+"%0A";
-
-
-if(note){
-
-message+=
-"📝 Note: "+note+"%0A";
-
-}
-
-
-message+="%0A*ORDER DETAILS*%0A";
-
-
-let total=0;
-
-
-cart.forEach((p,i)=>{
-
-message+=
-(i+1)+". "+
-p.name+
-" - Rs. "+
-p.price.toLocaleString()+
-"%0A";
-
-total+=p.price;
+return {
+name: p.name,
+price: p.price
+};
 
 });
 
+fetch("http://localhost:3000/order", {
 
-message+=
-"%0A💰 *TOTAL: Rs. "+
-total.toLocaleString()+
-"*";
+method: "POST",
 
+headers: {
+"Content-Type": "application/json"
+},
 
-const url=
-"https://wa.me/"+
-YOUR_WHATSAPP_NUMBER+
-"?text="+message;
+body: JSON.stringify({
 
+name: name,
 
-window.open(url,"_blank");
+phone: phone,
+
+address: address,
+
+note: note,
+
+items: items,
+
+total: total
+
+})
+
+})
+
+.then(response => response.json())
+
+.then(data => {
+
+if(data.success){
+
+alert("Order placed successfully!");
+
+closeOrder();
+
+}
+
+})
+
+.catch(error => {
+
+console.error("Order error:", error);
+
+alert("Unable to place order.");
+
+});
 
 }
 

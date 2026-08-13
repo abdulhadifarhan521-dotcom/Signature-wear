@@ -1,0 +1,57 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin V2</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<h1>Admin V2</h1>
+
+<button id="testBtn">Test Supabase</button>
+
+<div id="result"></div>
+
+<script>
+const SUPABASE_URL =
+"https://iworypmvibxrvtpfyhlm.supabase.co";
+
+const SUPABASE_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3b3J5cG12aWJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
+
+const supabase =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+document
+.getElementById("testBtn")
+.addEventListener("click", async () => {
+
+  const result =
+  document.getElementById("result");
+
+  result.innerHTML = "Testing...";
+
+  const { data, error } =
+  await supabase
+  .from("products")
+  .select("*");
+
+  if (error) {
+    result.innerHTML =
+    "ERROR: " + error.message;
+  } else {
+    result.innerHTML =
+    "SUCCESS: " + data.length + " products found";
+  }
+
+});
+</script>
+
+</body>
+</html>
+```

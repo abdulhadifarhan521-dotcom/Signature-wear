@@ -68,7 +68,6 @@
       border-radius: 10px;
     }
   </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -144,23 +143,8 @@
 
 <script>
 
-const SUPABASE_URL =
-"https://iworypmvibxrvtpfyhlm.supabase.co";
-
-const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3b3J5cG12aWJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
-
-const supabase =
-window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-const imageInput =
-document.getElementById("image");
-
-const preview =
-document.getElementById("preview");
+const imageInput = document.getElementById("image");
+const preview = document.getElementById("preview");
 
 imageInput.addEventListener("change", () => {
 
@@ -169,94 +153,95 @@ imageInput.addEventListener("change", () => {
   if (!file) return;
 
   preview.src = URL.createObjectURL(file);
-
   preview.style.display = "block";
 
 });
 
 document
-.getElementById("productForm")
-.addEventListener("submit", async (event) => {
+  .getElementById("productForm")
+  .addEventListener("submit", async (event) => {
 
-  event.preventDefault();
+    event.preventDefault();
 
-  const status =
-  document.getElementById("status");
+    const status = document.getElementById("status");
 
-  status.textContent =
-  "Uploading product...";
+    const formData = new FormData();
 
-  try {
+    formData.append(
+      "image",
+      document.getElementById("image").files[0]
+    );
 
-    const file =
-    document.getElementById("image").files[0];
+    formData.append(
+      "name",
+      document.getElementById("name").value
+    );
 
-    const fileName =
-    Date.now() + "-" + file.name;
+    formData.append(
+      "price",
+      document.getElementById("price").value
+    );
 
-    const { error: uploadError } =
-    await supabase.storage
-      .from("products")
-      .upload(fileName, file);
+    formData.append(
+      "description",
+      document.getElementById("description").value
+    );
 
-    if (uploadError)
-      throw uploadError;
+    formData.append(
+      "category",
+      document.getElementById("category").value
+    );
 
-    const imageUrl =
-      `${SUPABASE_URL}/storage/v1/object/public/products/${fileName}`;
+    formData.append(
+      "size",
+      document.getElementById("size").value
+    );
 
-    const { error } =
-    await supabase
-      .from("products")
-      .insert([
+    formData.append(
+      "color",
+      document.getElementById("color").value
+    );
+
+    status.textContent = "Adding product...";
+
+    try {
+
+      const response = await fetch(
+        "http://localhost:3000/admin/products",
         {
-          name:
-            document.getElementById("name").value,
-
-          price:
-            Number(
-              document.getElementById("price").value
-            ),
-
-          description:
-            document.getElementById("description").value,
-
-          category:
-            document.getElementById("category").value,
-
-          size:
-            document.getElementById("size").value,
-
-          colour:
-            document.getElementById("color").value,
-
-          image:
-            imageUrl
+          method: "POST",
+          body: formData
         }
-      ]);
+      );
 
-    if (error)
-      throw error;
+      const data = await response.json();
 
-    status.textContent =
-      "✅ Product Added Successfully";
+      if (data.success) {
 
-    document
-      .getElementById("productForm")
-      .reset();
+        status.textContent =
+          "✅ Product added successfully!";
 
-    preview.style.display = "none";
+        document.getElementById("productForm").reset();
 
-  } catch (err) {
+        preview.style.display = "none";
 
-    console.error(err);
+      } else {
 
-    status.textContent =
-      "❌ " + err.message;
+        status.textContent =
+          "❌ Product could not be added.";
 
-  }
+      }
 
-});
+    } catch (error) {
+
+      console.error(error);
+
+      status.textContent =
+        "❌ Server connection failed.";
+
+    }
+
+  });
 
 </script>
 

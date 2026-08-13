@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signature Wear - Admin Panel</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.08);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    button {
+      background: #111;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      opacity: .9;
+    }
+
+    #status {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    #preview {
+      width: 100%;
+      max-height: 350px;
+      object-fit: contain;
+      display: none;
+      margin-bottom: 15px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>Signature Wear Admin</h1>
+
+  <form id="productForm">
+
+    <label>Product Image</label>
+    <input
+      type="file"
+      id="image"
+      accept="image/*"
+      required
+    >
+
+    <img id="preview" alt="Preview">
+
+    <label>Product Name</label>
+    <input
+      type="text"
+      id="name"
+      placeholder="e.g. Premium Black Suit"
+      required
+    >
+
+    <label>Price</label>
+    <input
+      type="number"
+      id="price"
+      placeholder="e.g. 8500"
+      required
+    >
+
+    <label>Description</label>
+    <textarea
+      id="description"
+      placeholder="Product description"
+    ></textarea>
+
+    <label>Category</label>
+    <input
+      type="text"
+      id="category"
+      placeholder="e.g. Suit"
+    >
+
+    <label>Size</label>
+    <input
+      type="text"
+      id="size"
+      placeholder="e.g. S, M, L, XL"
+    >
+
+    <label>Color</label>
+    <input
+      type="text"
+      id="color"
+      placeholder="e.g. Black"
+    >
+
+    <button type="submit">
+      Add Product
+    </button>
+
+  </form>
+
+  <div id="status"></div>
+
+</div>
+
+<script>
+
+const imageInput = document.getElementById("image");
+const preview = document.getElementById("preview");
+
+imageInput.addEventListener("change", () => {
+
+  const file = imageInput.files[0];
+
+  if (!file) return;
+
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = "block";
+
+});
+
+document
+  .getElementById("productForm")
+  .addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+    const status = document.getElementById("status");
+
+    const formData = new FormData();
+
+    formData.append(
+      "image",
+      document.getElementById("image").files[0]
+    );
+
+    formData.append(
+      "name",
+      document.getElementById("name").value
+    );
+
+    formData.append(
+      "price",
+      document.getElementById("price").value
+    );
+
+    formData.append(
+      "description",
+      document.getElementById("description").value
+    );
+
+    formData.append(
+      "category",
+      document.getElementById("category").value
+    );
+
+    formData.append(
+      "size",
+      document.getElementById("size").value
+    );
+
+    formData.append(
+      "color",
+      document.getElementById("color").value
+    );
+
+    status.textContent = "Adding product...";
+
+    try {
+
+      const response = await fetch(
+        "http://localhost:3000/admin/products",
+        {
+          method: "POST",
+          body: formData
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+
+        status.textContent =
+          "✅ Product added successfully!";
+
+        document.getElementById("productForm").reset();
+
+        preview.style.display = "none";
+
+      } else {
+
+        status.textContent =
+          "❌ Product could not be added.";
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      status.textContent =
+        "❌ Server connection failed.";
+
+    }
+
+  });
+
+</script>
+
+</body>
+</html>

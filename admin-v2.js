@@ -2,13 +2,15 @@
 // SIGNATURE WEAR - ADMIN PANEL V2
 // ==========================================
 
-// Supabase Project
+// ==========================================
+// SUPABASE
+// ==========================================
+
 const SUPABASE_URL =
   "https://iworypmvibxrvtpfyhlm.supabase.co";
 
-// Supabase ANON / PUBLISHABLE KEY
 const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3b3J5cG12aWJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
 
 const { createClient } = window.supabase;
 
@@ -87,60 +89,78 @@ function esc(value = "") {
 
 
 // ==========================================
-// AUTH
+// AUTH BOOT
 // ==========================================
 
 async function boot() {
 
-  const {
-    data: {
-      session
+  try {
+
+    const {
+      data: {
+        session
+      }
+    } = await sb.auth.getSession();
+
+
+    if (session) {
+
+      await verifyAdmin(
+        session.user
+      );
+
+    } else {
+
+      showLogin();
+
     }
-  } = await sb.auth.getSession();
 
 
-  if (session) {
+    sb.auth.onAuthStateChange(
+      async (event, session) => {
 
-    await verifyAdmin(session.user);
+        if (event === "SIGNED_OUT") {
 
-  } else {
+          showLogin();
+
+          return;
+
+        }
+
+
+        if (event === "PASSWORD_RECOVERY") {
+
+          showPasswordReset();
+
+          return;
+
+        }
+
+
+        if (session) {
+
+          await verifyAdmin(
+            session.user
+          );
+
+        }
+
+      }
+    );
+
+  } catch (error) {
+
+    console.error(error);
 
     showLogin();
 
+    toast(
+      "Could not start admin panel.",
+      true
+    );
+
   }
 
-
-  sb.auth.onAuthStateChange(
-    async (event, session) => {
-
-      if (event === "SIGNED_OUT") {
-
-        showLogin();
-
-        return;
-
-      }
-
-
-      if (event === "PASSWORD_RECOVERY") {
-
-        showPasswordReset();
-
-        return;
-
-      }
-
-
-      if (session) {
-
-        await verifyAdmin(
-          session.user
-        );
-
-      }
-
-    }
-  );
 }
 
 
@@ -246,7 +266,6 @@ function showPasswordReset() {
           font-size:15px;
           font-weight:600;
           cursor:pointer;
-          pointer-events:auto;
         "
       >
         Change Password
@@ -260,26 +279,16 @@ function showPasswordReset() {
   document.body.appendChild(box);
 
 
-  const changePasswordBtn =
-    document.getElementById(
-      "changePasswordBtn"
-    );
-
-
-  changePasswordBtn.addEventListener(
+  $("changePasswordBtn").addEventListener(
     "click",
     async () => {
 
       const newPassword =
-        document.getElementById(
-          "resetNewPassword"
-        ).value;
+        $("resetNewPassword").value;
 
 
       const confirmPassword =
-        document.getElementById(
-          "resetConfirmPassword"
-        ).value;
+        $("resetConfirmPassword").value;
 
 
       if (
@@ -326,11 +335,15 @@ function showPasswordReset() {
       }
 
 
-      changePasswordBtn.disabled =
+      const button =
+        $("changePasswordBtn");
+
+
+      button.disabled =
         true;
 
 
-      changePasswordBtn.textContent =
+      button.textContent =
         "Saving...";
 
 
@@ -376,11 +389,11 @@ function showPasswordReset() {
         );
 
 
-        changePasswordBtn.disabled =
+        button.disabled =
           false;
 
 
-        changePasswordBtn.textContent =
+        button.textContent =
           "Change Password";
 
       }
@@ -403,11 +416,35 @@ async function verifyAdmin(user) {
   } = await sb
     .from("admin_users")
     .select("username")
-    .eq("user_id", user.id)
+    .eq(
+      "user_id",
+      user.id
+    )
     .maybeSingle();
 
 
-  if (error || !data) {
+  if (error) {
+
+    console.error(
+      "Admin verification:",
+      error
+    );
+
+    await sb.auth.signOut();
+
+    showLogin();
+
+    toast(
+      "Admin verification failed.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  if (!data) {
 
     await sb.auth.signOut();
 
@@ -520,25 +557,36 @@ $("loginForm").addEventListener(
 
     try {
 
+      // IMPORTANT:
+      // Username -> email is retrieved
+      // through the secure RPC function.
+      // This fixes the RLS login problem.
+
       const {
-        data,
+        data: email,
         error
-      } = await sb
-        .from("admin_users")
-        .select("email, username")
-        .eq(
-          "username",
-          username
-        )
-        .maybeSingle();
+      } = await sb.rpc(
+        "get_admin_email",
+        {
+          login_username:
+            username
+        }
+      );
 
 
       if (error) {
+
+        console.error(
+          "get_admin_email:",
+          error
+        );
+
         throw error;
+
       }
 
 
-      if (!data) {
+      if (!email) {
 
         throw new Error(
           "Invalid username or password."
@@ -551,7 +599,7 @@ $("loginForm").addEventListener(
         await sb.auth
           .signInWithPassword({
             email:
-              data.email,
+              email,
             password:
               password
           });
@@ -569,7 +617,10 @@ $("loginForm").addEventListener(
 
     } catch (error) {
 
-      console.error(error);
+      console.error(
+        "Login error:",
+        error
+      );
 
 
       toast(
@@ -597,53 +648,71 @@ $("loginForm").addEventListener(
 // FORGOT PASSWORD
 // ==========================================
 
-$("forgotPasswordBtn").onclick = async () => {
+$("forgotPasswordBtn").onclick =
+  async () => {
 
-  const resetEmail = prompt(
-    "Apni email enter karo:",
-    "abdulhadifarhan521@gmail.com"
-  );
+    const resetEmail =
+      prompt(
+        "Apni email enter karo:",
+        "hadimemon737@gmail.com"
+      );
 
-  if (!resetEmail) {
-    return;
-  }
 
-  const email = resetEmail.trim();
+    if (!resetEmail) {
+      return;
+    }
 
-  if (!email) {
+
+    const email =
+      resetEmail.trim();
+
+
+    if (!email) {
+
+      toast(
+        "Email enter karo.",
+        true
+      );
+
+      return;
+
+    }
+
+
+    const {
+      error
+    } =
+      await sb.auth
+        .resetPasswordForEmail(
+          email,
+          {
+            redirectTo:
+              "https://signature-wear-9r4c.vercel.app/admin-v2.html"
+          }
+        );
+
+
+    if (error) {
+
+      console.error(error);
+
+
+      toast(
+        error.message ||
+        "Password reset email could not be sent.",
+        true
+      );
+
+      return;
+
+    }
+
+
     toast(
-      "Email enter karo.",
-      true
-    );
-    return;
-  }
-
-  const { error } =
-    await sb.auth.resetPasswordForEmail(
-      email,
-      {
-        redirectTo:
-          "https://signature-wear-9r4c.vercel.app/admin-v2.html"
-      }
+      "Password reset link email par bhej diya gaya."
     );
 
-  if (error) {
-
-    console.error(error);
-
-    toast(
-      error.message ||
-      "Password reset email could not be sent.",
-      true
-    );
-
-    return;
-  }
-
-  toast(
-    "Password reset link email par bhej diya gaya."
-  );
-};
+  };
 
 
 // ==========================================

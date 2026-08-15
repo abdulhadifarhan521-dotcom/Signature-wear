@@ -8,7 +8,7 @@ const SUPABASE_URL =
 
 // Supabase ANON / PUBLISHABLE KEY
 const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3b3J5cG12aWJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3b3J5cG12aWJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jpc3";
 
 const { createClient } = window.supabase;
 
@@ -122,9 +122,7 @@ async function boot() {
       }
 
 
-      if (
-        event === "PASSWORD_RECOVERY"
-      ) {
+      if (event === "PASSWORD_RECOVERY") {
 
         showPasswordReset();
 
@@ -152,9 +150,7 @@ async function boot() {
 
 function showPasswordReset() {
 
-  if (
-    $("passwordResetScreen")
-  ) {
+  if ($("passwordResetScreen")) {
     return;
   }
 
@@ -162,8 +158,10 @@ function showPasswordReset() {
   const box =
     document.createElement("div");
 
+
   box.id =
     "passwordResetScreen";
+
 
   box.style.cssText = `
     position: fixed;
@@ -248,6 +246,7 @@ function showPasswordReset() {
           font-size:15px;
           font-weight:600;
           cursor:pointer;
+          pointer-events:auto;
         "
       >
         Change Password
@@ -261,16 +260,26 @@ function showPasswordReset() {
   document.body.appendChild(box);
 
 
-  $("changePasswordBtn").onclick =
+  const changePasswordBtn =
+    document.getElementById(
+      "changePasswordBtn"
+    );
+
+
+  changePasswordBtn.addEventListener(
+    "click",
     async () => {
 
       const newPassword =
-        $("resetNewPassword")
-          .value;
+        document.getElementById(
+          "resetNewPassword"
+        ).value;
+
 
       const confirmPassword =
-        $("resetConfirmPassword")
-          .value;
+        document.getElementById(
+          "resetConfirmPassword"
+        ).value;
 
 
       if (
@@ -317,26 +326,48 @@ function showPasswordReset() {
       }
 
 
-      $("changePasswordBtn")
-        .disabled = true;
+      changePasswordBtn.disabled =
+        true;
 
-      $("changePasswordBtn")
-        .textContent =
+
+      changePasswordBtn.textContent =
         "Saving...";
 
 
-      const {
-        error
-      } =
-        await sb.auth.updateUser({
-          password:
-            newPassword
-        });
+      try {
+
+        const {
+          error
+        } =
+          await sb.auth.updateUser({
+            password:
+              newPassword
+          });
 
 
-      if (error) {
+        if (error) {
+          throw error;
+        }
+
+
+        toast(
+          "Password successfully changed!"
+        );
+
+
+        box.remove();
+
+
+        await sb.auth.signOut();
+
+
+        showLogin();
+
+
+      } catch (error) {
 
         console.error(error);
+
 
         toast(
           error.message ||
@@ -344,31 +375,18 @@ function showPasswordReset() {
           true
         );
 
-        $("changePasswordBtn")
-          .disabled = false;
 
-        $("changePasswordBtn")
-          .textContent =
+        changePasswordBtn.disabled =
+          false;
+
+
+        changePasswordBtn.textContent =
           "Change Password";
-
-        return;
 
       }
 
-
-      toast(
-        "Password successfully changed!"
-      );
-
-
-      box.remove();
-
-
-      await sb.auth.signOut();
-
-      showLogin();
-
-    };
+    }
+  );
 
 }
 
@@ -409,6 +427,7 @@ async function verifyAdmin(user) {
     user,
     data.username
   );
+
 
   await loadAll();
 
@@ -491,7 +510,9 @@ $("loginForm").addEventListener(
     }
 
 
-    $("loginBtn").disabled = true;
+    $("loginBtn").disabled =
+      true;
+
 
     $("loginBtn").textContent =
       "Signing in...";
@@ -513,9 +534,7 @@ $("loginForm").addEventListener(
 
 
       if (error) {
-
         throw error;
-
       }
 
 
@@ -539,9 +558,7 @@ $("loginForm").addEventListener(
 
 
       if (result.error) {
-
         throw result.error;
-
       }
 
 
@@ -554,15 +571,18 @@ $("loginForm").addEventListener(
 
       console.error(error);
 
+
       toast(
         "Invalid username or password.",
         true
       );
 
+
     } finally {
 
       $("loginBtn").disabled =
         false;
+
 
       $("loginBtn").textContent =
         "Login";
@@ -577,72 +597,53 @@ $("loginForm").addEventListener(
 // FORGOT PASSWORD
 // ==========================================
 
-$("forgotPasswordBtn").onclick =
-  async () => {
+$("forgotPasswordBtn").onclick = async () => {
 
-    const resetEmail =
-      prompt(
-        "Apni email enter karo:",
-        "abdulhadifarhan521@gmail.com"
-      );
+  const resetEmail = prompt(
+    "Apni email enter karo:",
+    "abdulhadifarhan521@gmail.com"
+  );
 
+  if (!resetEmail) {
+    return;
+  }
 
-    if (!resetEmail) {
+  const email = resetEmail.trim();
 
-      return;
-
-    }
-
-
-    const email =
-      resetEmail.trim();
-
-
-    if (!email) {
-
-      toast(
-        "Email enter karo.",
-        true
-      );
-
-      return;
-
-    }
-
-
-    const {
-      error
-    } =
-      await sb.auth
-        .resetPasswordForEmail(
-          email,
-          {
-            redirectTo:
-              "https://signature-wear-9r4c.vercel.app/admin-v2.html"
-          }
-        );
-
-
-    if (error) {
-
-      console.error(error);
-
-      toast(
-        error.message ||
-        "Password reset email could not be sent.",
-        true
-      );
-
-      return;
-
-    }
-
-
+  if (!email) {
     toast(
-      "Password reset link email par bhej diya gaya."
+      "Email enter karo.",
+      true
+    );
+    return;
+  }
+
+  const { error } =
+    await sb.auth.resetPasswordForEmail(
+      email,
+      {
+        redirectTo:
+          "https://signature-wear-9r4c.vercel.app/admin-v2.html"
+      }
     );
 
-  };
+  if (error) {
+
+    console.error(error);
+
+    toast(
+      error.message ||
+      "Password reset email could not be sent.",
+      true
+    );
+
+    return;
+  }
+
+  toast(
+    "Password reset link email par bhej diya gaya."
+  );
+};
 
 
 // ==========================================
@@ -731,21 +732,13 @@ function openPage(page) {
     page.slice(1);
 
 
-  if (
-    page === "products"
-  ) {
-
+  if (page === "products") {
     renderProducts();
-
   }
 
 
-  if (
-    page === "orders"
-  ) {
-
+  if (page === "orders") {
     renderOrders();
-
   }
 
 }
@@ -810,6 +803,7 @@ if (
     .classList
     .add("dark");
 
+
   $("themeBtn").textContent =
     "☀ Light mode";
 
@@ -824,6 +818,7 @@ async function loadAll() {
 
   loading(true);
 
+
   try {
 
     await Promise.all([
@@ -831,17 +826,21 @@ async function loadAll() {
       loadOrders()
     ]);
 
+
     updateStats();
+
 
   } catch (error) {
 
     console.error(error);
+
 
     toast(
       error.message ||
       "Could not load data.",
       true
     );
+
 
   } finally {
 
@@ -873,9 +872,7 @@ async function loadProducts() {
 
 
   if (error) {
-
     throw error;
-
   }
 
 
@@ -884,6 +881,7 @@ async function loadProducts() {
 
 
   populateCategories();
+
 
   renderProducts();
 
@@ -913,7 +911,9 @@ async function loadOrders() {
       error.message
     );
 
+
     state.orders = [];
+
 
     return;
 
@@ -1174,16 +1174,12 @@ $("productsBody")
 
 
       if (edit) {
-
         openProduct(edit);
-
       }
 
 
       if (del) {
-
         deleteProduct(del);
-
       }
 
     }
@@ -1380,9 +1376,7 @@ async function uploadImage(file) {
 
 
   if (error) {
-
     throw error;
-
   }
 
 
@@ -1503,9 +1497,7 @@ $("productForm")
 
 
         if (result.error) {
-
           throw result.error;
-
         }
 
 
@@ -1528,6 +1520,7 @@ $("productForm")
       } catch (error) {
 
         console.error(error);
+
 
         toast(
           error.message ||
@@ -1588,9 +1581,7 @@ async function deleteProduct(id) {
 
 
     if (error) {
-
       throw error;
-
     }
 
 
@@ -1701,9 +1692,7 @@ function renderOrders() {
 function formatDate(value) {
 
   if (!value) {
-
     return "—";
-
   }
 
 
@@ -1712,9 +1701,7 @@ function formatDate(value) {
 
 
   if (isNaN(date)) {
-
     return "—";
-
   }
 
 

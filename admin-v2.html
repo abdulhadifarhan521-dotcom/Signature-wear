@@ -3,127 +3,655 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Signature Wear — Admin V2</title>
+
   <link rel="stylesheet" href="./admin-v2.css">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
+
   <div id="toast" class="toast"></div>
 
+
+  <!-- =========================
+       LOGIN SCREEN
+  ========================== -->
+
   <section id="loginScreen" class="auth-screen">
+
     <div class="auth-card">
+
       <div class="brand-mark">SW</div>
+
       <h1>Signature Wear</h1>
+
       <p class="muted">Admin Panel V2</p>
+
+
       <form id="loginForm">
-        <label>Username<input id="username" type="text" autocomplete="username" required></label>
-        <label>Password<input id="password" type="password" autocomplete="current-password" required></label>
-        <button id="loginBtn" class="primary full" type="submit">Login</button>
+
+        <label>
+          Username
+          <input
+            id="username"
+            type="text"
+            autocomplete="username"
+            required
+          >
+        </label>
+
+
+        <label>
+          Password
+          <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+            required
+          >
+        </label>
+
+
+        <button
+          id="loginBtn"
+          class="primary full"
+          type="submit"
+        >
+          Login
+        </button>
+
       </form>
-      <p class="security-note">Protected by Supabase Authentication</p>
+
+
+      <!-- FORGOT PASSWORD -->
+
+      <button
+        id="forgotPasswordBtn"
+        class="secondary full"
+        type="button"
+      >
+        Forgot Password?
+      </button>
+
+
+      <p class="security-note">
+        Protected by Supabase Authentication
+      </p>
+
     </div>
+
   </section>
+
+
+
+  <!-- =========================
+       ADMIN APP
+  ========================== -->
 
   <section id="app" class="app hidden">
+
+
+    <!-- SIDEBAR -->
+
     <aside class="sidebar">
+
       <div class="brand">
-        <div class="brand-mark small">SW</div>
-        <div><strong>Signature Wear</strong><span>Admin V2</span></div>
+
+        <div class="brand-mark small">
+          SW
+        </div>
+
+        <div>
+          <strong>Signature Wear</strong>
+          <span>Admin V2</span>
+        </div>
+
       </div>
+
+
       <nav>
-        <button class="nav-item active" data-page="dashboard">Dashboard</button>
-        <button class="nav-item" data-page="products">Products</button>
-        <button class="nav-item" data-page="orders">Orders</button>
+
+        <button
+          class="nav-item active"
+          data-page="dashboard"
+        >
+          Dashboard
+        </button>
+
+
+        <button
+          class="nav-item"
+          data-page="products"
+        >
+          Products
+        </button>
+
+
+        <button
+          class="nav-item"
+          data-page="orders"
+        >
+          Orders
+        </button>
+
       </nav>
+
+
       <div class="sidebar-bottom">
-        <button id="themeBtn" class="ghost full">☾ Dark mode</button>
-        <button id="logoutBtn" class="danger full">Logout</button>
+
+        <button
+          id="themeBtn"
+          class="ghost full"
+        >
+          ☾ Dark mode
+        </button>
+
+
+        <button
+          id="logoutBtn"
+          class="danger full"
+        >
+          Logout
+        </button>
+
       </div>
+
     </aside>
 
+
+
+    <!-- MAIN -->
+
     <main class="main">
+
+
+      <!-- TOPBAR -->
+
       <header class="topbar">
-        <button id="menuBtn" class="icon-btn">☰</button>
+
+        <button
+          id="menuBtn"
+          class="icon-btn"
+        >
+          ☰
+        </button>
+
+
         <div>
-          <h2 id="pageTitle">Dashboard</h2>
-          <span id="adminName" class="muted"></span>
+
+          <h2 id="pageTitle">
+            Dashboard
+          </h2>
+
+          <span
+            id="adminName"
+            class="muted"
+          ></span>
+
         </div>
+
       </header>
 
-      <div id="loading" class="loading hidden"><span></span>Loading…</div>
 
-      <section id="dashboardPage" class="page">
-        <div class="page-head"><div><h3>Overview</h3><p class="muted">Store performance at a glance.</p></div></div>
-        <div class="stats">
-          <article class="stat"><span>Total Products</span><strong id="statProducts">0</strong></article>
-          <article class="stat"><span>Total Orders</span><strong id="statOrders">0</strong></article>
-          <article class="stat"><span>Total Categories</span><strong id="statCategories">0</strong></article>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h3>Quick actions</h3></div>
-          <div class="quick-actions">
-            <button class="primary" id="addProductQuick">＋ Add Product</button>
-            <button class="secondary" id="viewOrdersQuick">View Orders</button>
-          </div>
-        </div>
-      </section>
 
-      <section id="productsPage" class="page hidden">
+      <!-- LOADING -->
+
+      <div
+        id="loading"
+        class="loading hidden"
+      >
+        <span></span>
+        Loading…
+      </div>
+
+
+
+      <!-- =========================
+           DASHBOARD
+      ========================== -->
+
+      <section
+        id="dashboardPage"
+        class="page"
+      >
+
         <div class="page-head">
-          <div><h3>Products</h3><p class="muted">Add, edit, search and manage your catalog.</p></div>
-          <button class="primary" id="addProductBtn">＋ Add Product</button>
+
+          <div>
+
+            <h3>Overview</h3>
+
+            <p class="muted">
+              Store performance at a glance.
+            </p>
+
+          </div>
+
         </div>
-        <div class="toolbar">
-          <input id="searchInput" placeholder="Search products…" type="search">
-          <select id="categoryFilter"><option value="">All categories</option></select>
+
+
+        <div class="stats">
+
+          <article class="stat">
+
+            <span>Total Products</span>
+
+            <strong id="statProducts">
+              0
+            </strong>
+
+          </article>
+
+
+          <article class="stat">
+
+            <span>Total Orders</span>
+
+            <strong id="statOrders">
+              0
+            </strong>
+
+          </article>
+
+
+          <article class="stat">
+
+            <span>Total Categories</span>
+
+            <strong id="statCategories">
+              0
+            </strong>
+
+          </article>
+
         </div>
-        <div class="panel table-wrap">
-          <table>
-            <thead><tr><th>Image</th><th>Name</th><th>Price</th><th>Category</th><th>Size</th><th>Colour</th><th>Actions</th></tr></thead>
-            <tbody id="productsBody"></tbody>
-          </table>
-          <div id="emptyProducts" class="empty hidden">No products found.</div>
+
+
+        <div class="panel">
+
+          <div class="panel-head">
+
+            <h3>
+              Quick actions
+            </h3>
+
+          </div>
+
+
+          <div class="quick-actions">
+
+            <button
+              class="primary"
+              id="addProductQuick"
+            >
+              ＋ Add Product
+            </button>
+
+
+            <button
+              class="secondary"
+              id="viewOrdersQuick"
+            >
+              View Orders
+            </button>
+
+          </div>
+
         </div>
+
       </section>
 
-      <section id="ordersPage" class="page hidden">
-        <div class="page-head"><div><h3>Orders</h3><p class="muted">View customer and order details.</p></div></div>
-        <div class="panel table-wrap">
-          <table>
-            <thead><tr><th>Customer</th><th>Phone</th><th>Product</th><th>Order Date</th><th>Actions</th></tr></thead>
-            <tbody id="ordersBody"></tbody>
-          </table>
-          <div id="emptyOrders" class="empty hidden">No orders found.</div>
+
+
+      <!-- =========================
+           PRODUCTS
+      ========================== -->
+
+      <section
+        id="productsPage"
+        class="page hidden"
+      >
+
+        <div class="page-head">
+
+          <div>
+
+            <h3>Products</h3>
+
+            <p class="muted">
+              Add, edit, search and manage your catalog.
+            </p>
+
+          </div>
+
+
+          <button
+            class="primary"
+            id="addProductBtn"
+          >
+            ＋ Add Product
+          </button>
+
         </div>
+
+
+        <div class="toolbar">
+
+          <input
+            id="searchInput"
+            placeholder="Search products…"
+            type="search"
+          >
+
+
+          <select id="categoryFilter">
+
+            <option value="">
+              All categories
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="panel table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Size</th>
+                <th>Colour</th>
+                <th>Actions</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody id="productsBody"></tbody>
+
+          </table>
+
+
+          <div
+            id="emptyProducts"
+            class="empty hidden"
+          >
+            No products found.
+          </div>
+
+        </div>
+
       </section>
+
+
+
+      <!-- =========================
+           ORDERS
+      ========================== -->
+
+      <section
+        id="ordersPage"
+        class="page hidden"
+      >
+
+        <div class="page-head">
+
+          <div>
+
+            <h3>Orders</h3>
+
+            <p class="muted">
+              View customer and order details.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Product</th>
+                <th>Order Date</th>
+                <th>Actions</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody id="ordersBody"></tbody>
+
+          </table>
+
+
+          <div
+            id="emptyOrders"
+            class="empty hidden"
+          >
+            No orders found.
+          </div>
+
+        </div>
+
+      </section>
+
     </main>
+
   </section>
 
+
+
+  <!-- =========================
+       PRODUCT DIALOG
+  ========================== -->
+
   <dialog id="productDialog">
-    <form id="productForm" class="modal" method="dialog">
-      <div class="modal-head"><h3 id="modalTitle">Add Product</h3><button type="button" class="icon-btn" id="closeProduct">×</button></div>
-      <input id="productId" type="hidden">
-      <div class="form-grid">
-        <label>Product Name<input id="productName" required></label>
-        <label>Price<input id="productPrice" type="number" min="0" step="0.01" required></label>
-        <label>Category<input id="productCategory" required></label>
-        <label>Size<input id="productSize" placeholder="S, M, L, XL"></label>
-        <label>Colour<input id="productColour"></label>
-        <label class="wide">Description<textarea id="productDescription" rows="4"></textarea></label>
-        <label class="wide">Product Image<input id="productImage" type="file" accept="image/*"></label>
-        <div class="wide image-preview-wrap"><img id="imagePreview" class="image-preview hidden" alt="Preview"></div>
+
+    <form
+      id="productForm"
+      class="modal"
+      method="dialog"
+    >
+
+      <div class="modal-head">
+
+        <h3 id="modalTitle">
+          Add Product
+        </h3>
+
+
+        <button
+          type="button"
+          class="icon-btn"
+          id="closeProduct"
+        >
+          ×
+        </button>
+
       </div>
-      <div class="modal-actions"><button type="button" class="secondary" id="cancelProduct">Cancel</button><button class="primary" id="saveProduct" type="submit">Save Product</button></div>
+
+
+      <input
+        id="productId"
+        type="hidden"
+      >
+
+
+      <div class="form-grid">
+
+        <label>
+          Product Name
+          <input
+            id="productName"
+            required
+          >
+        </label>
+
+
+        <label>
+          Price
+          <input
+            id="productPrice"
+            type="number"
+            min="0"
+            step="0.01"
+            required
+          >
+        </label>
+
+
+        <label>
+          Category
+          <input
+            id="productCategory"
+            required
+          >
+        </label>
+
+
+        <label>
+          Size
+          <input
+            id="productSize"
+            placeholder="S, M, L, XL"
+          >
+        </label>
+
+
+        <label>
+          Colour
+          <input id="productColour">
+        </label>
+
+
+        <label class="wide">
+
+          Description
+
+          <textarea
+            id="productDescription"
+            rows="4"
+          ></textarea>
+
+        </label>
+
+
+        <label class="wide">
+
+          Product Image
+
+          <input
+            id="productImage"
+            type="file"
+            accept="image/*"
+          >
+
+        </label>
+
+
+        <div class="wide image-preview-wrap">
+
+          <img
+            id="imagePreview"
+            class="image-preview hidden"
+            alt="Preview"
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="secondary"
+          id="cancelProduct"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          class="primary"
+          id="saveProduct"
+          type="submit"
+        >
+          Save Product
+        </button>
+
+      </div>
+
     </form>
+
   </dialog>
+
+
+
+  <!-- =========================
+       ORDER DIALOG
+  ========================== -->
 
   <dialog id="orderDialog">
+
     <div class="modal">
-      <div class="modal-head"><h3>Order Details</h3><button type="button" class="icon-btn" id="closeOrder">×</button></div>
-      <div id="orderDetails" class="details"></div>
+
+      <div class="modal-head">
+
+        <h3>
+          Order Details
+        </h3>
+
+
+        <button
+          type="button"
+          class="icon-btn"
+          id="closeOrder"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div
+        id="orderDetails"
+        class="details"
+      ></div>
+
     </div>
+
   </dialog>
 
+
+
+  <!-- =========================
+       JS
+  ========================== -->
+
   <script src="./admin-v2.js"></script>
+
 </body>
 </html>

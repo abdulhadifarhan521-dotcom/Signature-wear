@@ -334,6 +334,35 @@ $("loginForm").addEventListener(
 
 
 // ==========================================
+// // ==========================================
+// FORGOT PASSWORD
+// ==========================================
+
+$("forgotPasswordBtn").onclick = async () => {
+
+  const resetEmail = "abdulhadifarhan521@gmail.com";
+
+  const { error } = await sb.auth.resetPasswordForEmail(
+    resetEmail,
+    {
+      redirectTo:
+        "https://signature-wear-9r4c.vercel.app/admin-v2.html"
+    }
+  );
+
+  if (error) {
+    console.error(error);
+    toast(
+      "Password reset email could not be sent.",
+      true
+    );
+    return;
+  }
+
+  toast(
+    "Password reset link sent to your email."
+  );
+};
 // LOGOUT
 // ==========================================
 

@@ -8,7 +8,7 @@ const SUPABASE_URL =
 
 // Supabase ANON / PUBLISHABLE KEY
 const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3b3J5cG12aWJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jpc3";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3b3J5cG12aWJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
 
 const { createClient } = window.supabase;
 

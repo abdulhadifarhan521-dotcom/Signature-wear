@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,17 +25,24 @@
 
     <div class="auth-card">
 
-      <div class="brand-mark">SW</div>
+      <div class="brand-mark">
+        SW
+      </div>
 
-      <h1>Signature Wear</h1>
+      <h1>
+        Signature Wear
+      </h1>
 
-      <p class="muted">Admin Panel V2</p>
+      <p class="muted">
+        Admin Panel V2
+      </p>
 
 
       <form id="loginForm">
 
         <label>
           Username
+
           <input
             id="username"
             type="text"
@@ -46,6 +54,7 @@
 
         <label>
           Password
+
           <input
             id="password"
             type="password"
@@ -66,76 +75,59 @@
       </form>
 
 
-      <!-- FORGOT PASSWORD -->
+      <!-- =========================
+           FORGOT PASSWORD
+      ========================== -->
 
       <button
-          id="forgotPasswordBtn"
-              <div id="resetPasswordBox" class="hidden">
-
-                <h2>Reset Password</h2>
-
-                <input
-                  id="newPassword"
-                  type="password"
-                  placeholder="New Password"
-                />
-
-                <input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Confirm Password"
-                />
-
-                <button
-                  id="saveNewPasswordBtn"
-                  class="primary full"
-                  type="button"
-                >
-                  Change Password
-                </button>
-
-              </div>
-
-              <button
-                id="forgotPasswordBtn"
-                class="secondary full"
-                type="button"
-              >
-                Forgot Password?
-              </button>
+        id="forgotPasswordBtn"
+        class="secondary full"
+        type="button"
+      >
+        Forgot Password?
+      </button>
 
 
-        <p class="security-note">
-          Protected by Supabase Authentication
-        </p>
+      <p class="security-note">
+        Protected by Supabase Authentication
+      </p>
 
-      </div>
+    </div>
 
-    </section>
+  </section>
 
 
 
-    <!-- =========================
-         ADMIN APP
-    ========================== -->
+  <!-- =========================
+       ADMIN APP
+  ========================== -->
 
-    <section id="app" class="app hidden">
+  <section
+    id="app"
+    class="app hidden"
+  >
 
 
-      <!-- SIDEBAR -->
+    <!-- SIDEBAR -->
 
-      <aside class="sidebar">
+    <aside class="sidebar">
 
-        <div class="brand">
-
+      <div class="brand">
 
         <div class="brand-mark small">
           SW
         </div>
 
         <div>
-          <strong>Signature Wear</strong>
-          <span>Admin V2</span>
+
+          <strong>
+            Signature Wear
+          </strong>
+
+          <span>
+            Admin V2
+          </span>
+
         </div>
 
       </div>
@@ -146,6 +138,7 @@
         <button
           class="nav-item active"
           data-page="dashboard"
+          type="button"
         >
           Dashboard
         </button>
@@ -154,6 +147,7 @@
         <button
           class="nav-item"
           data-page="products"
+          type="button"
         >
           Products
         </button>
@@ -162,6 +156,7 @@
         <button
           class="nav-item"
           data-page="orders"
+          type="button"
         >
           Orders
         </button>
@@ -174,6 +169,7 @@
         <button
           id="themeBtn"
           class="ghost full"
+          type="button"
         >
           ☾ Dark mode
         </button>
@@ -182,6 +178,7 @@
         <button
           id="logoutBtn"
           class="danger full"
+          type="button"
         >
           Logout
         </button>
@@ -204,6 +201,7 @@
         <button
           id="menuBtn"
           class="icon-btn"
+          type="button"
         >
           ☰
         </button>
@@ -251,7 +249,9 @@
 
           <div>
 
-            <h3>Overview</h3>
+            <h3>
+              Overview
+            </h3>
 
             <p class="muted">
               Store performance at a glance.
@@ -266,7 +266,9 @@
 
           <article class="stat">
 
-            <span>Total Products</span>
+            <span>
+              Total Products
+            </span>
 
             <strong id="statProducts">
               0
@@ -277,7 +279,9 @@
 
           <article class="stat">
 
-            <span>Total Orders</span>
+            <span>
+              Total Orders
+            </span>
 
             <strong id="statOrders">
               0
@@ -288,7 +292,9 @@
 
           <article class="stat">
 
-            <span>Total Categories</span>
+            <span>
+              Total Categories
+            </span>
 
             <strong id="statCategories">
               0
@@ -315,6 +321,7 @@
             <button
               class="primary"
               id="addProductQuick"
+              type="button"
             >
               ＋ Add Product
             </button>
@@ -323,6 +330,7 @@
             <button
               class="secondary"
               id="viewOrdersQuick"
+              type="button"
             >
               View Orders
             </button>
@@ -348,7 +356,9 @@
 
           <div>
 
-            <h3>Products</h3>
+            <h3>
+              Products
+            </h3>
 
             <p class="muted">
               Add, edit, search and manage your catalog.
@@ -360,6 +370,7 @@
           <button
             class="primary"
             id="addProductBtn"
+            type="button"
           >
             ＋ Add Product
           </button>
@@ -439,7 +450,9 @@
 
           <div>
 
-            <h3>Orders</h3>
+            <h3>
+              Orders
+            </h3>
 
             <p class="muted">
               View customer and order details.
@@ -530,16 +543,21 @@
       <div class="form-grid">
 
         <label>
+
           Product Name
+
           <input
             id="productName"
             required
           >
+
         </label>
 
 
         <label>
+
           Price
+
           <input
             id="productPrice"
             type="number"
@@ -547,30 +565,42 @@
             step="0.01"
             required
           >
+
         </label>
 
 
         <label>
+
           Category
+
           <input
             id="productCategory"
             required
           >
+
         </label>
 
 
         <label>
+
           Size
+
           <input
             id="productSize"
             placeholder="S, M, L, XL"
           >
+
         </label>
 
 
         <label>
+
           Colour
-          <input id="productColour">
+
+          <input
+            id="productColour"
+          >
+
         </label>
 
 
@@ -683,4 +713,5 @@
   <script src="./admin-v2.js"></script>
 
 </body>
+
 </html>

@@ -69,36 +69,62 @@
       <!-- FORGOT PASSWORD -->
 
       <button
-        id="forgotPasswordBtn"
-        class="secondary full"
-        type="button"
-      >
-        Forgot Password?
-      </button>
+          id="forgotPasswordBtn"
+              <div id="resetPasswordBox" class="hidden">
+
+                <h2>Reset Password</h2>
+
+                <input
+                  id="newPassword"
+                  type="password"
+                  placeholder="New Password"
+                />
+
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm Password"
+                />
+
+                <button
+                  id="saveNewPasswordBtn"
+                  class="primary full"
+                  type="button"
+                >
+                  Change Password
+                </button>
+
+              </div>
+          class="secondary full"
+          type="button"
+        >
+          Forgot Password?
+        </button>
 
 
-      <p class="security-note">
-        Protected by Supabase Authentication
-      </p>
+        <p class="security-note">
+          Protected by Supabase Authentication
+        </p>
 
-    </div>
+      </div>
 
-  </section>
-
-
-
-  <!-- =========================
-       ADMIN APP
-  ========================== -->
-
-  <section id="app" class="app hidden">
+    </section>
 
 
-    <!-- SIDEBAR -->
 
-    <aside class="sidebar">
+    <!-- =========================
+         ADMIN APP
+    ========================== -->
 
-      <div class="brand">
+    <section id="app" class="app hidden">
+
+
+      <!-- SIDEBAR -->
+
+      <aside class="sidebar">
+
+        <div class="brand">
+
 
         <div class="brand-mark small">
           SW

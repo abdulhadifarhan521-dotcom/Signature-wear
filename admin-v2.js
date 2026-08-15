@@ -122,6 +122,17 @@ async function boot() {
       }
 
 
+      if (
+        event === "PASSWORD_RECOVERY"
+      ) {
+
+        showPasswordReset();
+
+        return;
+
+      }
+
+
       if (session) {
 
         await verifyAdmin(
@@ -132,6 +143,233 @@ async function boot() {
 
     }
   );
+}
+
+
+// ==========================================
+// PASSWORD RESET SCREEN
+// ==========================================
+
+function showPasswordReset() {
+
+  if (
+    $("passwordResetScreen")
+  ) {
+    return;
+  }
+
+
+  const box =
+    document.createElement("div");
+
+  box.id =
+    "passwordResetScreen";
+
+  box.style.cssText = `
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.65);
+    padding: 20px;
+    box-sizing: border-box;
+  `;
+
+
+  box.innerHTML = `
+
+    <div style="
+      width:100%;
+      max-width:420px;
+      background:#fff;
+      padding:30px;
+      border-radius:18px;
+      box-shadow:0 20px 60px rgba(0,0,0,.25);
+      box-sizing:border-box;
+    ">
+
+      <h2 style="
+        margin:0 0 10px;
+      ">
+        Reset Password
+      </h2>
+
+      <p style="
+        margin:0 0 22px;
+        color:#666;
+      ">
+        Set your new admin password.
+      </p>
+
+      <input
+        id="resetNewPassword"
+        type="password"
+        placeholder="New Password"
+        autocomplete="new-password"
+        style="
+          width:100%;
+          box-sizing:border-box;
+          padding:13px;
+          margin-bottom:12px;
+          border:1px solid #ddd;
+          border-radius:10px;
+          font-size:15px;
+        "
+      >
+
+      <input
+        id="resetConfirmPassword"
+        type="password"
+        placeholder="Confirm Password"
+        autocomplete="new-password"
+        style="
+          width:100%;
+          box-sizing:border-box;
+          padding:13px;
+          margin-bottom:18px;
+          border:1px solid #ddd;
+          border-radius:10px;
+          font-size:15px;
+        "
+      >
+
+      <button
+        id="changePasswordBtn"
+        type="button"
+        style="
+          width:100%;
+          padding:13px;
+          border:0;
+          border-radius:10px;
+          background:#111;
+          color:#fff;
+          font-size:15px;
+          font-weight:600;
+          cursor:pointer;
+        "
+      >
+        Change Password
+      </button>
+
+    </div>
+
+  `;
+
+
+  document.body.appendChild(box);
+
+
+  $("changePasswordBtn").onclick =
+    async () => {
+
+      const newPassword =
+        $("resetNewPassword")
+          .value;
+
+      const confirmPassword =
+        $("resetConfirmPassword")
+          .value;
+
+
+      if (
+        !newPassword ||
+        !confirmPassword
+      ) {
+
+        toast(
+          "Dono password fields fill karo.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      if (
+        newPassword.length < 6
+      ) {
+
+        toast(
+          "Password kam az kam 6 characters ka hona chahiye.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      if (
+        newPassword !==
+        confirmPassword
+      ) {
+
+        toast(
+          "Passwords match nahi kar rahe.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      $("changePasswordBtn")
+        .disabled = true;
+
+      $("changePasswordBtn")
+        .textContent =
+        "Saving...";
+
+
+      const {
+        error
+      } =
+        await sb.auth.updateUser({
+          password:
+            newPassword
+        });
+
+
+      if (error) {
+
+        console.error(error);
+
+        toast(
+          error.message ||
+          "Password change nahi hua.",
+          true
+        );
+
+        $("changePasswordBtn")
+          .disabled = false;
+
+        $("changePasswordBtn")
+          .textContent =
+          "Change Password";
+
+        return;
+
+      }
+
+
+      toast(
+        "Password successfully changed!"
+      );
+
+
+      box.remove();
+
+
+      await sb.auth.signOut();
+
+      showLogin();
+
+    };
+
 }
 
 
@@ -173,6 +411,7 @@ async function verifyAdmin(user) {
   );
 
   await loadAll();
+
 }
 
 
@@ -214,6 +453,7 @@ function showApp(
       "Administrator";
 
   }
+
 }
 
 
@@ -259,7 +499,6 @@ $("loginForm").addEventListener(
 
     try {
 
-      // Get admin user's real email
       const {
         data,
         error
@@ -289,12 +528,13 @@ $("loginForm").addEventListener(
       }
 
 
-      // Supabase Auth login
       const result =
         await sb.auth
           .signInWithPassword({
-            email: data.email,
-            password: password
+            email:
+              data.email,
+            password:
+              password
           });
 
 
@@ -334,35 +574,78 @@ $("loginForm").addEventListener(
 
 
 // ==========================================
-// // ==========================================
 // FORGOT PASSWORD
 // ==========================================
 
-$("forgotPasswordBtn").onclick = async () => {
+$("forgotPasswordBtn").onclick =
+  async () => {
 
-  const resetEmail = "abdulhadifarhan521@gmail.com";
+    const resetEmail =
+      prompt(
+        "Apni email enter karo:",
+        "abdulhadifarhan521@gmail.com"
+      );
 
-  const { error } = await sb.auth.resetPasswordForEmail(
-    resetEmail,
-    {
-      redirectTo:
-        "https://signature-wear-9r4c.vercel.app/admin-v2.html"
+
+    if (!resetEmail) {
+
+      return;
+
     }
-  );
 
-  if (error) {
-    console.error(error);
+
+    const email =
+      resetEmail.trim();
+
+
+    if (!email) {
+
+      toast(
+        "Email enter karo.",
+        true
+      );
+
+      return;
+
+    }
+
+
+    const {
+      error
+    } =
+      await sb.auth
+        .resetPasswordForEmail(
+          email,
+          {
+            redirectTo:
+              "https://signature-wear-9r4c.vercel.app/admin-v2.html"
+          }
+        );
+
+
+    if (error) {
+
+      console.error(error);
+
+      toast(
+        error.message ||
+        "Password reset email could not be sent.",
+        true
+      );
+
+      return;
+
+    }
+
+
     toast(
-      "Password reset email could not be sent.",
-      true
+      "Password reset link email par bhej diya gaya."
     );
-    return;
-  }
 
-  toast(
-    "Password reset link sent to your email."
-  );
-};
+  };
+
+
+// ==========================================
 // LOGOUT
 // ==========================================
 
@@ -371,7 +654,8 @@ $("logoutBtn").onclick =
 
     const {
       error
-    } = await sb.auth.signOut();
+    } =
+      await sb.auth.signOut();
 
 
     if (error) {
@@ -447,14 +731,18 @@ function openPage(page) {
     page.slice(1);
 
 
-  if (page === "products") {
+  if (
+    page === "products"
+  ) {
 
     renderProducts();
 
   }
 
 
-  if (page === "orders") {
+  if (
+    page === "orders"
+  ) {
 
     renderOrders();
 

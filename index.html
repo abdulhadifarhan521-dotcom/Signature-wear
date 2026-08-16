@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Signature Wear</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{
@@ -101,6 +103,12 @@ color:#a47745;
 font-weight:bold;
 margin-bottom:15px
 }
+.description{
+color:#666;
+font-size:14px;
+margin-bottom:12px;
+line-height:1.5
+}
 .info button{
 width:100%;
 padding:12px;
@@ -108,6 +116,19 @@ background:#211b18;
 color:white;
 border:0;
 cursor:pointer
+}
+.loading-products{
+text-align:center;
+padding:40px;
+font-size:18px;
+color:#777;
+grid-column:1/-1
+}
+.no-products{
+text-align:center;
+padding:40px;
+color:#777;
+grid-column:1/-1
 }
 .features{
 background:#eee5da;
@@ -247,7 +268,7 @@ padding:50px 5%
 <header>
 
 <div class="logo">
- Signature Wear
+Signature Wear
 </div>
 
 <nav>
@@ -296,7 +317,13 @@ SHOP NOW
 <h2>Our Collection</h2>
 </div>
 
-<div class="products" id="productsBox"></div>
+<div class="products" id="productsBox">
+
+<div class="loading-products">
+Loading products...
+</div>
+
+</div>
 
 </section>
 
@@ -360,9 +387,7 @@ Total: Rs. <span id="total">0</span>
 <button class="btn"
 style="width:100%"
 onclick="openOrder()">
-
 PLACE ORDER
-
 </button>
 
 </div>
@@ -398,9 +423,7 @@ placeholder="Order Note (Optional)"></textarea>
 <button
 class="btn"
 onclick="sendOrder()">
-
 ORDER ON WHATSAPP
-
 </button>
 
 </div>
@@ -411,63 +434,139 @@ ORDER ON WHATSAPP
 <script>
 
 /* =====================================
-   PRODUCTS
-   YAHAN APNI PICS + PRICE CHANGE KARO
+   SUPABASE
 ===================================== */
 
-const products=[
+const SUPABASE_URL =
+"https://iworypmvibxrvtpfyhlm.supabase.co";
 
-{
-name:"Noor Embroidered Suit",
-price:5490,
-image:"https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80"
-},
+const SUPABASE_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3b3J5cG12aWJ4cnZ0cGZ5aGxtIiwiaWF0IjoxNzg2NjIyMzAxLCJleHAiOjIxMDIxOTgzMDN9.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
 
-{
-name:"Rang-e-Mehfil 3 Piece",
-price:6290,
-image:"https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=800&q=80"
-},
+const { createClient } =
+window.supabase;
 
-{
-name:"Adaa Lawn 2 Piece",
-price:3990,
-image:"https://images.unsplash.com/photo-1583391733981-8497b8d3c8d2?auto=format&fit=crop&w=800&q=80"
-},
+const sb =
+createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-{
-name:"Riwaayat Luxury Suit",
-price:7490,
-image:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
+
+/* =====================================
+   PRODUCTS FROM SUPABASE
+===================================== */
+
+let products = [];
+
+async function loadProducts(){
+
+const box =
+document.getElementById("productsBox");
+
+box.innerHTML =
+`
+<div class="loading-products">
+Loading products...
+</div>
+`;
+
+try{
+
+const { data, error } =
+await sb
+.from("products")
+.select(
+"id,name,price,description,category,size,colour,images"
+);
+
+if(error){
+throw error;
 }
 
-];
+products = data || [];
+
+displayProducts();
+
+}catch(error){
+
+console.error(
+"Products error:",
+error
+);
+
+box.innerHTML =
+`
+<div class="no-products">
+Unable to load products.
+</div>
+`;
+
+}
+
+}
 
 
-/* CART */
-
-let cart=[];
-
+/* =====================================
+   DISPLAY PRODUCTS
+===================================== */
 
 function displayProducts(){
 
-let html="";
+const box =
+document.getElementById(
+"productsBox"
+);
 
-products.forEach((p,i)=>{
+if(!products.length){
 
-html+=`
+box.innerHTML =
+`
+<div class="no-products">
+No products available.
+</div>
+`;
+
+return;
+
+}
+
+let html = "";
+
+products.forEach(
+(p,i)=>{
+
+const image =
+p.images ||
+"https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80";
+
+html += `
 
 <div class="product">
 
-<img src="${p.image}">
+<img
+src="${image}"
+alt="${p.name || "Product"}"
+onerror="this.src='https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80'"
+>
 
 <div class="info">
 
-<h3>${p.name}</h3>
+<h3>
+${p.name || "Unnamed Product"}
+</h3>
 
 <div class="price">
-Rs. ${p.price.toLocaleString()}
+Rs. ${Number(p.price || 0).toLocaleString()}
 </div>
+
+${
+p.description
+?
+`<p class="description">${p.description}</p>`
+:
+""
+}
 
 <button onclick="add(${i})">
 ADD TO CART
@@ -481,14 +580,28 @@ ADD TO CART
 
 });
 
-document.getElementById("productsBox").innerHTML=html;
+box.innerHTML =
+html;
 
 }
 
 
+/* =====================================
+   CART
+===================================== */
+
+let cart = [];
+
+
 function add(i){
 
-cart.push(products[i]);
+if(!products[i]){
+return;
+}
+
+cart.push(
+products[i]
+);
 
 update();
 
@@ -499,35 +612,49 @@ openCart();
 
 function update(){
 
-document.getElementById("count").innerText=cart.length;
+document.getElementById(
+"count"
+).innerText =
+cart.length;
 
-let html="";
-let total=0;
+let html = "";
+let total = 0;
 
-cart.forEach((p,i)=>{
+cart.forEach(
+(p,i)=>{
 
-total+=p.price;
+const price =
+Number(p.price || 0);
 
-html+=`
+total += price;
+
+const image =
+p.images ||
+"https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80";
+
+html += `
 
 <div class="cartitem">
 
-<img src="${p.image}">
+<img
+src="${image}"
+alt="${p.name || "Product"}"
+>
 
 <div>
 
-<b>${p.name}</b>
+<b>
+${p.name || "Product"}
+</b>
 
 <p>
-Rs. ${p.price.toLocaleString()}
+Rs. ${price.toLocaleString()}
 </p>
 
 <button
 class="remove"
 onclick="remove(${i})">
-
 Remove
-
 </button>
 
 </div>
@@ -538,10 +665,15 @@ Remove
 
 });
 
-document.getElementById("cartItems").innerHTML=
-html || "<p>Your cart is empty.</p>";
+document.getElementById(
+"cartItems"
+).innerHTML =
+html ||
+"<p>Your cart is empty.</p>";
 
-document.getElementById("total").innerText=
+document.getElementById(
+"total"
+).innerText =
 total.toLocaleString();
 
 }
@@ -549,7 +681,10 @@ total.toLocaleString();
 
 function remove(i){
 
-cart.splice(i,1);
+cart.splice(
+i,
+1
+);
 
 update();
 
@@ -558,126 +693,101 @@ update();
 
 function openCart(){
 
-document.getElementById("cartbox")
-.classList.add("open");
+document.getElementById(
+"cartbox"
+)
+.classList
+.add("open");
 
 }
 
 
 function closeCart(){
 
-document.getElementById("cartbox")
-.classList.remove("open");
+document.getElementById(
+"cartbox"
+)
+.classList
+.remove("open");
 
 }
 
 
-/* ORDER FORM */
+/* =====================================
+   ORDER FORM
+===================================== */
 
 function openOrder(){
 
-if(cart.length===0){
+if(cart.length === 0){
 
-alert("Please add a product first.");
+alert(
+"Please add a product first."
+);
 
 return;
 
 }
 
-document.getElementById("order")
-.classList.add("open");
+document.getElementById(
+"order"
+)
+.classList
+.add("open");
 
 }
 
 
 function closeOrder(){
 
-document.getElementById("order")
-.classList.remove("open");
+document.getElementById(
+"order"
+)
+.classList
+.remove("open");
 
 }
 
 
 /* =====================================
-   WHATSAPP ORDER
+   WHATSAPP / ORDER
 ===================================== */
-function sendOrder() {
 
-  const name = document.getElementById("name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const address = document.getElementById("address").value.trim();
-  const note = document.getElementById("note").value.trim();
-
-  if (!name || !phone || !address) {
-    alert("Please enter your name, phone and address.");
-    return;
-  }
-
-  let total = 0;
-
-  const items = cart.map(p => {
-    total += p.price;
-
-    return {
-      name: p.name,
-      price: p.price
-    };
-  });
-
-  fetch("http://localhost:3000/order", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      name: name,
-      phone: phone,
-      address: address,
-      note: note,
-      items: items,
-      total: total
-    })
-  })
-  .then(response => response.json())
-  .then(data => {
-
-    if (data.success) {
-      alert("Order placed successfully!");
-
-      if (typeof closeOrder === "function") {
-        closeOrder();
-      }
-    } else {
-      alert("Order could not be placed.");
-    }
-
-  })
-  .catch(error => {
-    console.error("Order error:", error);
-    alert("Unable to connect to the order server.");
-  });
-
-
-
- 
-
-
+function sendOrder(){
 
 const name =
-document.getElementById("name").value;
+document
+.getElementById("name")
+.value
+.trim();
 
 const phone =
-document.getElementById("phone").value;
+document
+.getElementById("phone")
+.value
+.trim();
 
 const address =
-document.getElementById("address").value;
+document
+.getElementById("address")
+.value
+.trim();
 
 const note =
-document.getElementById("note").value;
+document
+.getElementById("note")
+.value
+.trim();
 
-if(!name || !phone || !address){
+if(
+!name ||
+!phone ||
+!address
+){
 
-alert("Please enter your name, phone and address.");
+alert(
+"Please enter your name, phone and address."
+);
 
 return;
 
@@ -685,71 +795,113 @@ return;
 
 let total = 0;
 
-const items = cart.map(p => {
+const items =
+cart.map(
+p=>{
 
-total += p.price;
+const price =
+Number(p.price || 0);
+
+total += price;
 
 return {
-name: p.name,
-price: p.price
+name:
+p.name,
+price:
+price
 };
 
 });
 
-fetch("http://localhost:3000/order", {
 
-method: "POST",
+/*
+   Order API
+   Keep your existing backend endpoint.
+*/
 
-headers: {
-"Content-Type": "application/json"
+fetch(
+"http://localhost:3000/order",
+{
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
 },
 
-body: JSON.stringify({
+body:
+JSON.stringify({
 
-name: name,
+name:
+name,
 
-phone: phone,
+phone:
+phone,
 
-address: address,
+address:
+address,
 
-note: note,
+note:
+note,
 
-items: items,
+items:
+items,
 
-total: total
+total:
+total
 
 })
 
-})
-
-.then(response => response.json())
-
-.then(data => {
+}
+)
+.then(
+response =>
+response.json()
+)
+.then(
+data=>{
 
 if(data.success){
 
-alert("Order placed successfully!");
+alert(
+"Order placed successfully!"
+);
 
 closeOrder();
 
-}
+}else{
 
-})
-
-.catch(error => {
-
-console.error("Order error:", error);
-
-alert("Unable to place order.");
-
-});
+alert(
+"Order could not be placed."
+);
 
 }
 
+}
+)
+.catch(
+error=>{
 
-/* START */
+console.error(
+"Order error:",
+error
+);
 
-displayProducts();
+alert(
+"Unable to connect to the order server."
+);
+
+}
+);
+
+}
+
+
+/* =====================================
+   START
+===================================== */
+
+loadProducts();
 
 update();
 

@@ -50,7 +50,7 @@ padding:8%;
 color:white;
 background:
 linear-gradient(#0008,#0008),
-url("https://images.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=1600&q=80")
+url("https://image.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=1600&q=80")
 center/cover
 }
 .hero h1{
@@ -476,7 +476,7 @@ const { data, error } =
 await sb
 .from("products")
 .select(
-"id,name,price,description,category,size,colour,images"
+"id,name,price,description,category,size,colour,image"
 );
 
 if(error){
@@ -536,8 +536,8 @@ products.forEach(
 (p,i)=>{
 
 const image =
-p.images ||
-"https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80";
+p.image ||
+"https://image.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80";
 
 html += `
 
@@ -546,7 +546,7 @@ html += `
 <img
 src="${image}"
 alt="${p.name || "Product"}"
-onerror="this.src='https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80'"
+onerror="this.src='https://image.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80'"
 >
 
 <div class="info">
@@ -628,8 +628,8 @@ Number(p.price || 0);
 total += price;
 
 const image =
-p.images ||
-"https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80";
+p.image ||
+"https://image.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80";
 
 html += `
 

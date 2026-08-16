@@ -1,16 +1,13 @@
 // ==========================================
 // SIGNATURE WEAR - ADMIN PANEL V2
-// ==========================================
-
-// ==========================================
-// SUPABASE
+// PASSWORD-FREE VERSION
 // ==========================================
 
 const SUPABASE_URL =
   "https://iworypmvibxrvtpfyhlm.supabase.co";
 
 const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3b3J5cG12aWJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
 
 const { createClient } = window.supabase;
 
@@ -36,7 +33,7 @@ const state = {
 // HELPERS
 // ==========================================
 
-const $ = (id) =>
+const $ = id =>
   document.getElementById(id);
 
 
@@ -89,839 +86,7 @@ function esc(value = "") {
 
 
 // ==========================================
-// AUTH BOOT
-// ==========================================
-
-async function boot() {
-
-  try {
-
-    const {
-      data: {
-        session
-      }
-    } = await sb.auth.getSession();
-
-
-    if (session) {
-
-      await verifyAdmin(
-        session.user
-      );
-
-    } else {
-
-      showLogin();
-
-    }
-
-
-    sb.auth.onAuthStateChange(
-      async (event, session) => {
-
-        if (event === "SIGNED_OUT") {
-
-          showLogin();
-
-          return;
-
-        }
-
-
-        if (event === "PASSWORD_RECOVERY") {
-
-          showPasswordReset();
-
-          return;
-
-        }
-
-
-        if (session) {
-
-          await verifyAdmin(
-            session.user
-          );
-
-        }
-
-      }
-    );
-
-  } catch (error) {
-
-    console.error(error);
-
-    showLogin();
-
-    toast(
-      "Could not start admin panel.",
-      true
-    );
-
-  }
-
-}
-
-
-// ==========================================
-// PASSWORD RESET SCREEN
-// ==========================================
-
-function showPasswordReset() {
-
-  if ($("passwordResetScreen")) {
-    return;
-  }
-
-
-  const box =
-    document.createElement("div");
-
-
-  box.id =
-    "passwordResetScreen";
-
-
-  box.style.cssText = `
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,.65);
-    padding: 20px;
-    box-sizing: border-box;
-  `;
-
-
-  box.innerHTML = `
-
-    <div style="
-      width:100%;
-      max-width:420px;
-      background:#fff;
-      padding:30px;
-      border-radius:18px;
-      box-shadow:0 20px 60px rgba(0,0,0,.25);
-      box-sizing:border-box;
-    ">
-
-      <h2 style="
-        margin:0 0 10px;
-      ">
-        Reset Password
-      </h2>
-
-      <p style="
-        margin:0 0 22px;
-        color:#666;
-      ">
-        Set your new admin password.
-      </p>
-
-      <input
-        id="resetNewPassword"
-        type="password"
-        placeholder="New Password"
-        autocomplete="new-password"
-        style="
-          width:100%;
-          box-sizing:border-box;
-          padding:13px;
-          margin-bottom:12px;
-          border:1px solid #ddd;
-          border-radius:10px;
-          font-size:15px;
-        "
-      >
-
-      <input
-        id="resetConfirmPassword"
-        type="password"
-        placeholder="Confirm Password"
-        autocomplete="new-password"
-        style="
-          width:100%;
-          box-sizing:border-box;
-          padding:13px;
-          margin-bottom:18px;
-          border:1px solid #ddd;
-          border-radius:10px;
-          font-size:15px;
-        "
-      >
-
-      <button
-        id="changePasswordBtn"
-        type="button"
-        style="
-          width:100%;
-          padding:13px;
-          border:0;
-          border-radius:10px;
-          background:#111;
-          color:#fff;
-          font-size:15px;
-          font-weight:600;
-          cursor:pointer;
-        "
-      >
-        Change Password
-      </button>
-
-    </div>
-
-  `;
-
-
-  document.body.appendChild(box);
-
-
-  $("changePasswordBtn").addEventListener(
-    "click",
-    async () => {
-
-      const newPassword =
-        $("resetNewPassword").value;
-
-
-      const confirmPassword =
-        $("resetConfirmPassword").value;
-
-
-      if (
-        !newPassword ||
-        !confirmPassword
-      ) {
-
-        toast(
-          "Dono password fields fill karo.",
-          true
-        );
-
-        return;
-
-      }
-
-
-      if (
-        newPassword.length < 6
-      ) {
-
-        toast(
-          "Password kam az kam 6 characters ka hona chahiye.",
-          true
-        );
-
-        return;
-
-      }
-
-
-      if (
-        newPassword !==
-        confirmPassword
-      ) {
-
-        toast(
-          "Passwords match nahi kar rahe.",
-          true
-        );
-
-        return;
-
-      }
-
-
-      const button =
-        $("changePasswordBtn");
-
-
-      button.disabled =
-        true;
-
-
-      button.textContent =
-        "Saving...";
-
-
-      try {
-
-        const {
-          error
-        } =
-          await sb.auth.updateUser({
-            password:
-              newPassword
-          });
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        toast(
-          "Password successfully changed!"
-        );
-
-
-        box.remove();
-
-
-        await sb.auth.signOut();
-
-
-        showLogin();
-
-
-      } catch (error) {
-
-        console.error(error);
-
-
-        toast(
-          error.message ||
-          "Password change nahi hua.",
-          true
-        );
-
-
-        button.disabled =
-          false;
-
-
-        button.textContent =
-          "Change Password";
-
-      }
-
-    }
-  );
-
-}
-
-
-// ==========================================
-// ADMIN VERIFICATION
-// ==========================================
-
-async function verifyAdmin(user) {
-
-  const {
-    data,
-    error
-  } = await sb
-    .from("admin_users")
-    .select("username")
-    .eq(
-      "user_id",
-      user.id
-    )
-    .maybeSingle();
-
-
-  if (error) {
-
-    console.error(
-      "Admin verification:",
-      error
-    );
-
-    await sb.auth.signOut();
-
-    showLogin();
-
-    toast(
-      "Admin verification failed.",
-      true
-    );
-
-    return;
-
-  }
-
-
-  if (!data) {
-
-    await sb.auth.signOut();
-
-    showLogin();
-
-    toast(
-      "You are not authorized as admin.",
-      true
-    );
-
-    return;
-
-  }
-
-
-  showApp(
-    user,
-    data.username
-  );
-
-
-  await loadAll();
-
-}
-
-
-// ==========================================
-// LOGIN / APP
-// ==========================================
-
-function showLogin() {
-
-  $("loginScreen")
-    .classList
-    .remove("hidden");
-
-  $("app")
-    .classList
-    .add("hidden");
-}
-
-
-function showApp(
-  user,
-  username
-) {
-
-  $("loginScreen")
-    .classList
-    .add("hidden");
-
-  $("app")
-    .classList
-    .remove("hidden");
-
-
-  if ($("adminName")) {
-
-    $("adminName").textContent =
-      username ||
-      user.user_metadata?.username ||
-      "Administrator";
-
-  }
-
-}
-
-
-// ==========================================
-// LOGIN
-// ==========================================
-
-$("loginForm").addEventListener(
-  "submit",
-  async event => {
-
-    event.preventDefault();
-
-
-    const username =
-      $("username")
-        .value
-        .trim();
-
-
-    const password =
-      $("password")
-        .value;
-
-
-    if (!username || !password) {
-
-      toast(
-        "Username and password required.",
-        true
-      );
-
-      return;
-
-    }
-
-
-    $("loginBtn").disabled =
-      true;
-
-
-    $("loginBtn").textContent =
-      "Signing in...";
-
-
-    try {
-
-      // IMPORTANT:
-      // Username -> email is retrieved
-      // through the secure RPC function.
-      // This fixes the RLS login problem.
-
-      const {
-        data: email,
-        error
-      } = await sb.rpc(
-        "get_admin_email",
-        {
-          login_username:
-            username
-        }
-      );
-
-
-      if (error) {
-
-        console.error(
-          "get_admin_email:",
-          error
-        );
-
-        throw error;
-
-      }
-
-
-      if (!email) {
-
-        throw new Error(
-          "Invalid username or password."
-        );
-
-      }
-
-
-      const result =
-        await sb.auth
-          .signInWithPassword({
-            email:
-              email,
-            password:
-              password
-          });
-
-
-      if (result.error) {
-        throw result.error;
-      }
-
-
-      await verifyAdmin(
-        result.data.user
-      );
-
-
-    } catch (error) {
-
-      console.error(
-        "Login error:",
-        error
-      );
-
-
-      toast(
-        "Invalid username or password.",
-        true
-      );
-
-
-    } finally {
-
-      $("loginBtn").disabled =
-        false;
-
-
-      $("loginBtn").textContent =
-        "Login";
-
-    }
-
-  }
-);
-
-
-// ==========================================
-// FORGOT PASSWORD
-// ==========================================
-
-$("forgotPasswordBtn").onclick =
-  async () => {
-
-    const resetEmail =
-      prompt(
-        "Apni email enter karo:",
-        "hadimemon737@gmail.com"
-      );
-
-
-    if (!resetEmail) {
-      return;
-    }
-
-
-    const email =
-      resetEmail.trim();
-
-
-    if (!email) {
-
-      toast(
-        "Email enter karo.",
-        true
-      );
-
-      return;
-
-    }
-
-
-    const {
-      error
-    } =
-      await sb.auth
-        .resetPasswordForEmail(
-          email,
-          {
-            redirectTo:
-              "https://signature-wear-9r4c.vercel.app/admin-v2.html"
-          }
-        );
-
-
-    if (error) {
-
-      console.error(error);
-
-
-      toast(
-        error.message ||
-        "Password reset email could not be sent.",
-        true
-      );
-
-      return;
-
-    }
-
-
-    toast(
-      "Password reset link email par bhej diya gaya."
-    );
-
-  };
-
-
-// ==========================================
-// LOGOUT
-// ==========================================
-
-$("logoutBtn").onclick =
-  async () => {
-
-    const {
-      error
-    } =
-      await sb.auth.signOut();
-
-
-    if (error) {
-
-      toast(
-        error.message,
-        true
-      );
-
-      return;
-
-    }
-
-
-    toast(
-      "Logged out successfully."
-    );
-
-  };
-
-
-// ==========================================
-// NAVIGATION
-// ==========================================
-
-document
-  .querySelectorAll(".nav-item")
-  .forEach(button => {
-
-    button.onclick = () => {
-
-      openPage(
-        button.dataset.page
-      );
-
-    };
-
-  });
-
-
-function openPage(page) {
-
-  document
-    .querySelectorAll(".nav-item")
-    .forEach(button => {
-
-      button.classList.toggle(
-        "active",
-        button.dataset.page === page
-      );
-
-    });
-
-
-  [
-    "dashboard",
-    "products",
-    "orders"
-  ].forEach(p => {
-
-    $(`${p}Page`)
-      .classList
-      .toggle(
-        "hidden",
-        p !== page
-      );
-
-  });
-
-
-  $("pageTitle").textContent =
-    page.charAt(0).toUpperCase() +
-    page.slice(1);
-
-
-  if (page === "products") {
-    renderProducts();
-  }
-
-
-  if (page === "orders") {
-    renderOrders();
-  }
-
-}
-
-
-// ==========================================
-// MOBILE MENU
-// ==========================================
-
-$("menuBtn").onclick =
-  () => {
-
-    document
-      .querySelector(".sidebar")
-      .classList
-      .toggle("open");
-
-  };
-
-
-// ==========================================
-// DARK MODE
-// ==========================================
-
-$("themeBtn").onclick =
-  () => {
-
-    document.body
-      .classList
-      .toggle("dark");
-
-
-    const dark =
-      document.body
-        .classList
-        .contains("dark");
-
-
-    localStorage.setItem(
-      "sw-theme",
-      dark
-        ? "dark"
-        : "light"
-    );
-
-
-    $("themeBtn").textContent =
-      dark
-        ? "☀ Light mode"
-        : "☾ Dark mode";
-
-  };
-
-
-if (
-  localStorage.getItem(
-    "sw-theme"
-  ) === "dark"
-) {
-
-  document.body
-    .classList
-    .add("dark");
-
-
-  $("themeBtn").textContent =
-    "☀ Light mode";
-
-}
-
-
-// ==========================================
-// LOAD ALL DATA
-// ==========================================
-
-async function loadAll() {
-
-  loading(true);
-
-
-  try {
-
-    await Promise.all([
-      loadProducts(),
-      loadOrders()
-    ]);
-
-
-    updateStats();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    toast(
-      error.message ||
-      "Could not load data.",
-      true
-    );
-
-
-  } finally {
-
-    loading(false);
-
-  }
-
-}
-
-
-// ==========================================
-// PRODUCTS
+// LOAD PRODUCTS
 // ==========================================
 
 async function loadProducts() {
@@ -939,23 +104,22 @@ async function loadProducts() {
       }
     );
 
-
   if (error) {
     throw error;
   }
 
-
   state.products =
     data || [];
 
-
   populateCategories();
 
-
   renderProducts();
-
 }
 
+
+// ==========================================
+// LOAD ORDERS
+// ==========================================
 
 async function loadOrders() {
 
@@ -972,7 +136,6 @@ async function loadOrders() {
       }
     );
 
-
   if (error) {
 
     console.warn(
@@ -980,21 +143,51 @@ async function loadOrders() {
       error.message
     );
 
-
     state.orders = [];
 
+    renderOrders();
 
     return;
-
   }
-
 
   state.orders =
     data || [];
 
-
   renderOrders();
+}
 
+
+// ==========================================
+// LOAD EVERYTHING
+// ==========================================
+
+async function loadAll() {
+
+  loading(true);
+
+  try {
+
+    await Promise.all([
+      loadProducts(),
+      loadOrders()
+    ]);
+
+    updateStats();
+
+  } catch (error) {
+
+    console.error(error);
+
+    toast(
+      error.message ||
+      "Could not load data.",
+      true
+    );
+
+  } finally {
+
+    loading(false);
+  }
 }
 
 
@@ -1007,10 +200,8 @@ function updateStats() {
   $("statProducts").textContent =
     state.products.length;
 
-
   $("statOrders").textContent =
     state.orders.length;
-
 
   const categories =
     new Set(
@@ -1023,22 +214,19 @@ function updateStats() {
         .filter(Boolean)
     );
 
-
   $("statCategories").textContent =
     categories.size;
-
 }
 
 
 // ==========================================
-// CATEGORY FILTER
+// CATEGORIES
 // ==========================================
 
 function populateCategories() {
 
   const current =
     $("categoryFilter").value;
-
 
   const categories =
     [
@@ -1053,7 +241,6 @@ function populateCategories() {
       )
     ]
     .sort();
-
 
   $("categoryFilter").innerHTML =
     `
@@ -1072,10 +259,8 @@ function populateCategories() {
       )
       .join("");
 
-
   $("categoryFilter").value =
     current;
-
 }
 
 
@@ -1091,10 +276,8 @@ function filteredProducts() {
       .trim()
       .toLowerCase();
 
-
   const category =
     $("categoryFilter").value;
-
 
   return state.products.filter(
     product => {
@@ -1110,26 +293,21 @@ function filteredProducts() {
           .toLowerCase()
           .includes(search);
 
-
       const matchesCategory =
         !category ||
         product.category === category;
-
 
       return (
         matchesSearch &&
         matchesCategory
       );
-
     }
   );
-
 }
 
 
 $("searchInput").oninput =
   renderProducts;
-
 
 $("categoryFilter").onchange =
   renderProducts;
@@ -1144,14 +322,12 @@ function renderProducts() {
   const products =
     filteredProducts();
 
-
   $("emptyProducts")
     .classList
     .toggle(
       "hidden",
       products.length !== 0
     );
-
 
   $("productsBody").innerHTML =
     products
@@ -1221,12 +397,11 @@ function renderProducts() {
         `
       )
       .join("");
-
 }
 
 
 // ==========================================
-// PRODUCT ACTIONS
+// PRODUCT BUTTONS
 // ==========================================
 
 $("productsBody")
@@ -1237,20 +412,16 @@ $("productsBody")
       const edit =
         event.target.dataset.edit;
 
-
       const del =
         event.target.dataset.delete;
-
 
       if (edit) {
         openProduct(edit);
       }
 
-
       if (del) {
         deleteProduct(del);
       }
-
     }
   );
 
@@ -1269,56 +440,43 @@ function openProduct(id = null) {
         )
       : null;
 
-
   const product =
     state.editing;
-
 
   $("modalTitle").textContent =
     product
       ? "Edit Product"
       : "Add Product";
 
-
   $("productId").value =
     product?.id || "";
-
 
   $("productName").value =
     product?.name || "";
 
-
   $("productPrice").value =
     product?.price ?? "";
-
 
   $("productCategory").value =
     product?.category || "";
 
-
   $("productSize").value =
     product?.size || "";
-
 
   $("productColour").value =
     product?.colour || "";
 
-
   $("productDescription").value =
     product?.description || "";
-
 
   $("productImage").value =
     "";
 
-
   state.previewUrl =
     product?.image || "";
 
-
   $("imagePreview").src =
     state.previewUrl;
-
 
   $("imagePreview")
     .classList
@@ -1327,10 +485,8 @@ function openProduct(id = null) {
       !state.previewUrl
     );
 
-
   $("productDialog")
     .showModal();
-
 }
 
 
@@ -1341,14 +497,12 @@ function openProduct(id = null) {
 $("addProductBtn").onclick =
   () => openProduct();
 
-
 $("addProductQuick").onclick =
   () => {
 
     openPage("products");
 
     openProduct();
-
   };
 
 
@@ -1357,14 +511,13 @@ $("viewOrdersQuick").onclick =
 
 
 // ==========================================
-// CLOSE PRODUCT MODAL
+// CLOSE PRODUCT
 // ==========================================
 
 $("closeProduct").onclick =
   () => {
 
     $("productDialog").close();
-
   };
 
 
@@ -1372,7 +525,6 @@ $("cancelProduct").onclick =
   () => {
 
     $("productDialog").close();
-
   };
 
 
@@ -1386,26 +538,20 @@ $("productImage").onchange =
     const file =
       event.target.files[0];
 
-
     if (!file) return;
-
 
     const url =
       URL.createObjectURL(file);
 
-
     state.previewUrl =
       url;
-
 
     $("imagePreview").src =
       url;
 
-
     $("imagePreview")
       .classList
       .remove("hidden");
-
   };
 
 
@@ -1425,10 +571,8 @@ async function uploadImage(file) {
         ""
       ) || "jpg";
 
-
   const path =
     `products/${crypto.randomUUID()}.${extension}`;
-
 
   const {
     error
@@ -1443,11 +587,9 @@ async function uploadImage(file) {
       }
     );
 
-
   if (error) {
     throw error;
   }
-
 
   const {
     data
@@ -1455,9 +597,7 @@ async function uploadImage(file) {
     .from("product-images")
     .getPublicUrl(path);
 
-
   return data.publicUrl;
-
 }
 
 
@@ -1474,23 +614,19 @@ $("productForm")
 
       loading(true);
 
-
       try {
 
         const id =
           $("productId").value ||
           null;
 
-
         const file =
           $("productImage")
             .files[0];
 
-
         let image =
           state.editing?.image ||
           null;
-
 
         if (file) {
 
@@ -1502,15 +638,11 @@ $("productForm")
             throw new Error(
               "Image must be 5MB or smaller."
             );
-
           }
-
 
           image =
             await uploadImage(file);
-
         }
-
 
         const payload = {
 
@@ -1546,13 +678,10 @@ $("productForm")
               .trim(),
 
           image
-
         };
-
 
         const result =
           id
-
             ? await sb
                 .from("products")
                 .update(payload)
@@ -1560,19 +689,14 @@ $("productForm")
 
             : await sb
                 .from("products")
-                .insert(
-                  payload
-                );
-
+                .insert(payload);
 
         if (result.error) {
           throw result.error;
         }
 
-
         $("productDialog")
           .close();
-
 
         toast(
           id
@@ -1580,16 +704,13 @@ $("productForm")
             : "Product added successfully."
         );
 
-
         await loadProducts();
 
         updateStats();
 
-
       } catch (error) {
 
         console.error(error);
-
 
         toast(
           error.message ||
@@ -1597,13 +718,10 @@ $("productForm")
           true
         );
 
-
       } finally {
 
         loading(false);
-
       }
-
     }
   );
 
@@ -1620,21 +738,16 @@ async function deleteProduct(id) {
         item.id == id
     );
 
-
   if (!product) return;
-
 
   const confirmed =
     confirm(
       `Delete "${product.name}"? This cannot be undone.`
     );
 
-
   if (!confirmed) return;
 
-
   loading(true);
-
 
   try {
 
@@ -1648,21 +761,17 @@ async function deleteProduct(id) {
         id
       );
 
-
     if (error) {
       throw error;
     }
-
 
     toast(
       "Product deleted."
     );
 
-
     await loadProducts();
 
     updateStats();
-
 
   } catch (error) {
 
@@ -1671,13 +780,10 @@ async function deleteProduct(id) {
       true
     );
 
-
   } finally {
 
     loading(false);
-
   }
-
 }
 
 
@@ -1693,7 +799,6 @@ function renderOrders() {
       "hidden",
       state.orders.length !== 0
     );
-
 
   $("ordersBody").innerHTML =
     state.orders
@@ -1750,7 +855,6 @@ function renderOrders() {
         `
       )
       .join("");
-
 }
 
 
@@ -1764,18 +868,14 @@ function formatDate(value) {
     return "—";
   }
 
-
   const date =
     new Date(value);
-
 
   if (isNaN(date)) {
     return "—";
   }
 
-
   return date.toLocaleString();
-
 }
 
 
@@ -1791,9 +891,7 @@ $("ordersBody")
       const id =
         event.target.dataset.order;
 
-
       if (!id) return;
-
 
       const order =
         state.orders.find(
@@ -1801,9 +899,7 @@ $("ordersBody")
             item.id == id
         );
 
-
       if (!order) return;
-
 
       $("orderDetails")
         .innerHTML = `
@@ -1822,7 +918,6 @@ $("ordersBody")
 
         </div>
 
-
         <div class="detail-row">
 
           <b>
@@ -1837,7 +932,6 @@ $("ordersBody")
 
         </div>
 
-
         <div class="detail-row">
 
           <b>
@@ -1850,7 +944,6 @@ $("ordersBody")
           )}
 
         </div>
-
 
         <div class="detail-row">
 
@@ -1865,7 +958,6 @@ $("ordersBody")
           )}
 
         </div>
-
 
         <div class="detail-row">
 
@@ -1884,10 +976,8 @@ $("ordersBody")
 
       `;
 
-
       $("orderDialog")
         .showModal();
-
     }
   );
 
@@ -1900,12 +990,130 @@ $("closeOrder").onclick =
   () => {
 
     $("orderDialog").close();
-
   };
+
+
+// ==========================================
+// NAVIGATION
+// ==========================================
+
+document
+  .querySelectorAll(".nav-item")
+  .forEach(button => {
+
+    button.onclick = () => {
+
+      openPage(
+        button.dataset.page
+      );
+    };
+
+  });
+
+
+function openPage(page) {
+
+  document
+    .querySelectorAll(".nav-item")
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.page === page
+      );
+
+    });
+
+  [
+    "dashboard",
+    "products",
+    "orders"
+  ].forEach(p => {
+
+    $(`${p}Page`)
+      .classList
+      .toggle(
+        "hidden",
+        p !== page
+      );
+
+  });
+
+  $("pageTitle").textContent =
+    page.charAt(0).toUpperCase() +
+    page.slice(1);
+
+  if (page === "products") {
+    renderProducts();
+  }
+
+  if (page === "orders") {
+    renderOrders();
+  }
+}
+
+
+// ==========================================
+// MOBILE MENU
+// ==========================================
+
+$("menuBtn").onclick =
+  () => {
+
+    document
+      .querySelector(".sidebar")
+      .classList
+      .toggle("open");
+  };
+
+
+// ==========================================
+// DARK MODE
+// ==========================================
+
+$("themeBtn").onclick =
+  () => {
+
+    document.body
+      .classList
+      .toggle("dark");
+
+    const dark =
+      document.body
+        .classList
+        .contains("dark");
+
+    localStorage.setItem(
+      "sw-theme",
+      dark
+        ? "dark"
+        : "light"
+    );
+
+    $("themeBtn").textContent =
+      dark
+        ? "☀ Light mode"
+        : "☾ Dark mode";
+  };
+
+
+if (
+  localStorage.getItem(
+    "sw-theme"
+  ) === "dark"
+) {
+
+  document.body
+    .classList
+    .add("dark");
+
+  $("themeBtn").textContent =
+    "☀ Light mode";
+}
 
 
 // ==========================================
 // START
 // ==========================================
 
-boot();
+loadAll();

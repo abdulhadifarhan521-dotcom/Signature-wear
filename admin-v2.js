@@ -1,13 +1,16 @@
 // ==========================================
 // SIGNATURE WEAR - ADMIN PANEL V2
 // PASSWORD-FREE VERSION
+// DATABASE COLUMNS:
+// id, name, price, description, category,
+// size, colour, images
 // ==========================================
 
 const SUPABASE_URL =
   "https://iworypmvibxrvtpfyhlm.supabase.co";
 
 const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3b3J5cG12aWJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm9jG12aGJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
 
 const { createClient } = window.supabase;
 
@@ -96,13 +99,7 @@ async function loadProducts() {
     error
   } = await sb
     .from("products")
-    .select("*")
-    .order(
-      "created_at",
-      {
-        ascending: false
-      }
-    );
+    .select("*");
 
   if (error) {
     throw error;
@@ -128,13 +125,7 @@ async function loadOrders() {
     error
   } = await sb
     .from("orders")
-    .select("*")
-    .order(
-      "created_at",
-      {
-        ascending: false
-      }
-    );
+    .select("*");
 
   if (error) {
 
@@ -158,7 +149,7 @@ async function loadOrders() {
 
 
 // ==========================================
-// LOAD EVERYTHING
+// LOAD ALL
 // ==========================================
 
 async function loadAll() {
@@ -187,12 +178,13 @@ async function loadAll() {
   } finally {
 
     loading(false);
+
   }
 }
 
 
 // ==========================================
-// DASHBOARD STATS
+// STATS
 // ==========================================
 
 function updateStats() {
@@ -338,11 +330,11 @@ function renderProducts() {
 
           <td>
             ${
-              product.image
+              product.images
                 ? `
                   <img
                     class="product-thumb"
-                    src="${esc(product.image)}"
+                    src="${esc(product.images)}"
                     alt=""
                   >
                 `
@@ -401,7 +393,7 @@ function renderProducts() {
 
 
 // ==========================================
-// PRODUCT BUTTONS
+// PRODUCT ACTIONS
 // ==========================================
 
 $("productsBody")
@@ -422,6 +414,7 @@ $("productsBody")
       if (del) {
         deleteProduct(del);
       }
+
     }
   );
 
@@ -473,7 +466,7 @@ function openProduct(id = null) {
     "";
 
   state.previewUrl =
-    product?.image || "";
+    product?.images || "";
 
   $("imagePreview").src =
     state.previewUrl;
@@ -497,12 +490,14 @@ function openProduct(id = null) {
 $("addProductBtn").onclick =
   () => openProduct();
 
+
 $("addProductQuick").onclick =
   () => {
 
     openPage("products");
 
     openProduct();
+
   };
 
 
@@ -518,6 +513,7 @@ $("closeProduct").onclick =
   () => {
 
     $("productDialog").close();
+
   };
 
 
@@ -525,6 +521,7 @@ $("cancelProduct").onclick =
   () => {
 
     $("productDialog").close();
+
   };
 
 
@@ -552,6 +549,7 @@ $("productImage").onchange =
     $("imagePreview")
       .classList
       .remove("hidden");
+
   };
 
 
@@ -624,8 +622,8 @@ $("productForm")
           $("productImage")
             .files[0];
 
-        let image =
-          state.editing?.image ||
+        let images =
+          state.editing?.images ||
           null;
 
         if (file) {
@@ -638,10 +636,12 @@ $("productForm")
             throw new Error(
               "Image must be 5MB or smaller."
             );
+
           }
 
-          image =
+          images =
             await uploadImage(file);
+
         }
 
         const payload = {
@@ -677,19 +677,28 @@ $("productForm")
               .value
               .trim(),
 
-          image
+          images
+
         };
 
-        const result =
-          id
-            ? await sb
-                .from("products")
-                .update(payload)
-                .eq("id", id)
+        let result;
 
-            : await sb
-                .from("products")
-                .insert(payload);
+        if (id) {
+
+          result =
+            await sb
+              .from("products")
+              .update(payload)
+              .eq("id", id);
+
+        } else {
+
+          result =
+            await sb
+              .from("products")
+              .insert(payload);
+
+        }
 
         if (result.error) {
           throw result.error;
@@ -721,7 +730,9 @@ $("productForm")
       } finally {
 
         loading(false);
+
       }
+
     }
   );
 
@@ -783,6 +794,7 @@ async function deleteProduct(id) {
   } finally {
 
     loading(false);
+
   }
 }
 
@@ -978,6 +990,7 @@ $("ordersBody")
 
       $("orderDialog")
         .showModal();
+
     }
   );
 
@@ -990,6 +1003,7 @@ $("closeOrder").onclick =
   () => {
 
     $("orderDialog").close();
+
   };
 
 
@@ -1006,6 +1020,7 @@ document
       openPage(
         button.dataset.page
       );
+
     };
 
   });
@@ -1050,6 +1065,7 @@ function openPage(page) {
   if (page === "orders") {
     renderOrders();
   }
+
 }
 
 
@@ -1064,6 +1080,7 @@ $("menuBtn").onclick =
       .querySelector(".sidebar")
       .classList
       .toggle("open");
+
   };
 
 
@@ -1094,6 +1111,7 @@ $("themeBtn").onclick =
       dark
         ? "☀ Light mode"
         : "☾ Dark mode";
+
   };
 
 
@@ -1109,6 +1127,7 @@ if (
 
   $("themeBtn").textContent =
     "☀ Light mode";
+
 }
 
 

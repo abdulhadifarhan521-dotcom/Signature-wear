@@ -9,267 +9,743 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#faf6ef;
+  --cream:#f2e6d5;
+  --brown:#2b211b;
+  --gold:#b58a55;
+  --gold2:#8e683f;
+  --text:#302721;
+  --muted:#78695d;
+  --white:#fffdf9;
+  --border:#dfd0bd;
+  --danger:#a52c24;
+}
+
+html{scroll-behavior:smooth}
+
 body{
-font-family:Arial,sans-serif;
-background:#faf7f2;
-color:#29221e
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
 }
+
+/* HEADER */
+
 header{
-background:#211b18;
-color:white;
-padding:18px 6%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-position:sticky;
-top:0;
-z-index:10
+  height:74px;
+  background:rgba(43,33,27,.98);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 6%;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 4px 20px #0003;
 }
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+  color:white;
+}
+
 .logo{
-font-family:Georgia,serif;
-font-size:25px;
-letter-spacing:3px
+  width:45px;
+  height:45px;
+  border:1px solid var(--gold);
+  object-fit:contain;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--gold);
+  font-family:Georgia,serif;
+  font-size:13px;
+  letter-spacing:1px;
 }
+
+/*
+  Jab tumhara actual Signature Wear logo image mile,
+  is div ko image se replace kar denge.
+*/
+
+.brand-name{
+  font-family:Georgia,serif;
+  font-size:22px;
+  letter-spacing:2px;
+}
+
 nav a{
-color:white;
-text-decoration:none;
-margin:0 12px
+  color:#fff;
+  text-decoration:none;
+  margin:0 11px;
+  font-size:14px;
 }
-.cart{
-background:#c9a16b;
-color:white;
-border:0;
-padding:10px 16px;
-cursor:pointer
+
+nav a:hover{
+  color:#d8b37d;
 }
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.account-btn,
+.cart-btn{
+  border:0;
+  padding:10px 14px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.account-btn{
+  background:transparent;
+  color:#fff;
+  border:1px solid #ffffff44;
+}
+
+.cart-btn{
+  background:var(--gold);
+  color:#fff;
+}
+
+/* HERO */
+
 .hero{
-min-height:520px;
-display:flex;
-align-items:center;
-padding:8%;
-color:white;
-background:
-linear-gradient(#0008,#0008),
-url("https://image.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=1600&q=80")
-center/cover
+  min-height:650px;
+  display:flex;
+  align-items:center;
+  padding:8%;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+
+  /*
+    MODEL IMAGE:
+    Yahan tumhari final model pic lagegi.
+  */
+
+  background-image:
+    linear-gradient(90deg,
+      rgba(30,23,19,.78),
+      rgba(30,23,19,.30)
+    ),
+    url("https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1800&q=90");
+
+  background-position:center;
+  background-size:cover;
 }
+
+.hero-content{
+  max-width:650px;
+  position:relative;
+  z-index:2;
+}
+
+.hero-small{
+  color:#e4c89d;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  font-size:12px;
+}
+
 .hero h1{
-font:60px Georgia,serif
+  font-family:Georgia,serif;
+  font-size:64px;
+  line-height:1.05;
+  margin:16px 0;
 }
+
 .hero p{
-margin:20px 0;
-font-size:18px
+  font-size:18px;
+  line-height:1.6;
+  max-width:520px;
+  margin-bottom:30px;
 }
+
 .btn{
-background:#c9a16b;
-color:white;
-border:0;
-padding:14px 25px;
-cursor:pointer
+  background:var(--gold);
+  color:white;
+  border:0;
+  padding:14px 25px;
+  cursor:pointer;
+  font-weight:bold;
 }
+
+.btn:hover{
+  background:var(--gold2);
+}
+
+/* SECTIONS */
+
 section{
-padding:65px 6%
+  padding:70px 6%;
 }
+
 .title{
-text-align:center;
-margin-bottom:35px
+  text-align:center;
+  margin-bottom:40px;
 }
+
+.title small{
+  color:var(--gold2);
+  letter-spacing:3px;
+}
+
 .title h2{
-font:40px Georgia,serif
+  font-family:Georgia,serif;
+  font-size:42px;
+  margin-top:8px;
 }
+
+/* PRODUCTS */
+
 .products{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:20px
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:24px;
 }
+
 .product{
-background:white;
-box-shadow:0 3px 15px #0001
+  background:var(--white);
+  border:1px solid var(--border);
+  box-shadow:0 7px 25px #59432a18;
+  overflow:hidden;
+  transition:.25s;
 }
+
+.product:hover{
+  transform:translateY(-5px);
+}
+
 .product img{
-width:100%;
-height:330px;
-object-fit:cover
+  width:100%;
+  height:340px;
+  object-fit:cover;
+  display:block;
+  background:#eee;
 }
-.info{
-padding:15px
+
+.product-info{
+  padding:18px;
 }
-.info h3{
-font:20px Georgia,serif;
-margin-bottom:8px
+
+.product-info h3{
+  font-family:Georgia,serif;
+  font-size:20px;
+  margin-bottom:8px;
 }
+
+.product-description{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:8px;
+}
+
+.product-meta{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:10px;
+}
+
 .price{
-color:#a47745;
-font-weight:bold;
-margin-bottom:15px
+  color:var(--gold2);
+  font-weight:bold;
+  font-size:17px;
+  margin-bottom:15px;
 }
-.description{
-color:#666;
-font-size:14px;
-margin-bottom:12px;
-line-height:1.5
+
+.product-info button{
+  width:100%;
+  padding:12px;
+  background:var(--brown);
+  color:#fff;
+  border:0;
+  cursor:pointer;
+  font-weight:bold;
 }
-.info button{
-width:100%;
-padding:12px;
-background:#211b18;
-color:white;
-border:0;
-cursor:pointer
+
+.product-info button:hover{
+  background:#49382c;
 }
-.loading-products{
-text-align:center;
-padding:40px;
-font-size:18px;
-color:#777;
-grid-column:1/-1
-}
+
+.loading,
 .no-products{
-text-align:center;
-padding:40px;
-color:#777;
-grid-column:1/-1
+  grid-column:1/-1;
+  text-align:center;
+  padding:50px;
+  color:var(--muted);
 }
+
+/* FEATURES */
+
 .features{
-background:#eee5da;
-display:grid;
-grid-template-columns:repeat(4,1fr);
-text-align:center;
-gap:20px
+  background:var(--cream);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:25px;
+  text-align:center;
 }
-.features h3{
-margin:10px 0
+
+.feature h2{
+  color:var(--gold2);
+  font-size:28px;
 }
+
+.feature h3{
+  font-family:Georgia,serif;
+  margin:10px 0;
+}
+
+.feature p{
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* FOOTER */
+
 footer{
-background:#211b18;
-color:white;
-text-align:center;
-padding:45px
+  background:var(--brown);
+  color:#fff;
+  text-align:center;
+  padding:50px;
+}
+
+footer h2{
+  font-family:Georgia,serif;
+}
+
+footer p{
+  color:#d6c8ba;
+  margin-top:8px;
 }
 
 /* CART */
-.cartbox{
-position:fixed;
-right:-430px;
-top:0;
-width:430px;
-max-width:100%;
-height:100%;
-background:white;
-z-index:100;
-padding:25px;
-overflow:auto;
-transition:.3s;
-box-shadow:-5px 0 20px #0004
-}
-.cartbox.open{
-right:0
-}
-.close{
-float:right;
-border:0;
-background:none;
-font-size:28px;
-cursor:pointer
-}
-.cartitem{
-display:flex;
-gap:12px;
-padding:15px 0;
-border-bottom:1px solid #ddd
-}
-.cartitem img{
-width:70px;
-height:80px;
-object-fit:cover
-}
-.remove{
-border:0;
-background:none;
-color:red;
-cursor:pointer
-}
-.total{
-font-size:20px;
-font-weight:bold;
-margin:25px 0
+
+.cart-panel{
+  position:fixed;
+  top:0;
+  right:-460px;
+  width:460px;
+  max-width:100%;
+  height:100vh;
+  background:var(--white);
+  z-index:300;
+  padding:28px;
+  overflow:auto;
+  transition:.3s;
+  box-shadow:-8px 0 30px #0004;
 }
 
-/* ORDER FORM */
-.order{
-display:none;
-position:fixed;
-inset:0;
-background:#0009;
-z-index:200;
-align-items:center;
-justify-content:center;
-padding:15px
+.cart-panel.open{
+  right:0;
 }
-.order.open{
-display:flex
+
+.close{
+  float:right;
+  border:0;
+  background:none;
+  font-size:30px;
+  cursor:pointer;
+  color:var(--brown);
 }
-.form{
-background:white;
-width:500px;
-max-width:100%;
-padding:30px
+
+.cart-panel h2{
+  font:30px Georgia,serif;
+  margin:15px 0 25px;
 }
-.form h2{
-font:30px Georgia,serif;
-margin-bottom:20px
+
+.cart-item{
+  display:flex;
+  gap:12px;
+  padding:15px 0;
+  border-bottom:1px solid var(--border);
 }
+
+.cart-item img{
+  width:75px;
+  height:90px;
+  object-fit:cover;
+}
+
+.cart-info{
+  flex:1;
+}
+
+.cart-info b{
+  font-family:Georgia,serif;
+}
+
+.quantity{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:10px;
+}
+
+.quantity button{
+  width:29px;
+  height:29px;
+  border:1px solid var(--border);
+  background:var(--cream);
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.quantity span{
+  min-width:20px;
+  text-align:center;
+}
+
+.remove{
+  border:0;
+  background:none;
+  color:var(--danger);
+  cursor:pointer;
+  font-size:12px;
+  margin-top:8px;
+}
+
+.cart-total{
+  font-size:21px;
+  font-weight:bold;
+  margin:25px 0;
+}
+
+/* ORDER FULL SCREEN */
+
+.order-screen{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:500;
+  background:var(--bg);
+  overflow:auto;
+}
+
+.order-screen.open{
+  display:block;
+}
+
+.order-page{
+  min-height:100vh;
+  padding:30px 6%;
+}
+
+.order-top{
+  max-width:1150px;
+  margin:0 auto 30px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  padding-bottom:20px;
+}
+
+.order-top h2{
+  font:40px Georgia,serif;
+}
+
+.cancel-btn{
+  background:transparent;
+  border:1px solid var(--brown);
+  color:var(--brown);
+  padding:12px 20px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.order-grid{
+  max-width:1150px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:30px;
+}
+
+.order-card{
+  background:var(--white);
+  border:1px solid var(--border);
+  padding:30px;
+  box-shadow:0 8px 25px #59432a12;
+}
+
+.order-card h3{
+  font:27px Georgia,serif;
+  margin-bottom:22px;
+}
+
+.form label{
+  display:block;
+  font-size:13px;
+  font-weight:bold;
+  margin-top:12px;
+}
+
 .form input,
-.form textarea{
-width:100%;
-padding:13px;
-margin:7px 0;
-border:1px solid #ccc
+.form textarea,
+.form select{
+  width:100%;
+  padding:14px;
+  margin-top:7px;
+  border:1px solid var(--border);
+  background:#fff;
+  outline:none;
 }
+
 .form textarea{
-height:90px
+  min-height:105px;
+  resize:vertical;
 }
-.form button{
-width:100%;
-margin-top:10px
+
+.payment-title{
+  margin-top:20px;
+  font-weight:bold;
+  font-size:14px;
+}
+
+.payment-options{
+  display:grid;
+  gap:10px;
+  margin-top:10px;
+}
+
+.payment-option{
+  border:1px solid var(--border);
+  padding:13px;
+  cursor:pointer;
+  background:#fff;
+}
+
+.payment-option input{
+  width:auto;
+  margin-right:8px;
+}
+
+.payment-note{
+  background:var(--cream);
+  padding:12px;
+  margin-top:10px;
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.order-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:25px;
+}
+
+.order-buttons button{
+  flex:1;
+}
+
+.summary-item{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  padding:13px 0;
+  border-bottom:1px solid var(--border);
+  font-size:14px;
+}
+
+.summary-total{
+  display:flex;
+  justify-content:space-between;
+  margin-top:22px;
+  font-size:22px;
+  font-weight:bold;
+}
+
+/* ACCOUNT */
+
+.account-modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#0008;
+  z-index:700;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+}
+
+.account-modal.open{
+  display:flex;
+}
+
+.account-box{
+  background:var(--white);
+  width:440px;
+  max-width:100%;
+  padding:30px;
+}
+
+.account-box h2{
+  font:30px Georgia,serif;
+  margin-bottom:20px;
+}
+
+.account-box input{
+  width:100%;
+  padding:13px;
+  margin:7px 0;
+  border:1px solid var(--border);
+}
+
+.account-actions{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
+}
+
+.account-actions button{
+  flex:1;
+}
+
+.account-message{
+  margin-top:12px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translate(-50%,120px);
+  opacity:0;
+  background:var(--brown);
+  color:#fff;
+  padding:14px 22px;
+  z-index:1000;
+  transition:.3s;
+  border-left:4px solid var(--gold);
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+.toast.error{
+  border-left-color:#d33;
 }
 
 /* MOBILE */
-@media(max-width:900px){
+
+@media(max-width:1000px){
+
 .products{
-grid-template-columns:repeat(2,1fr)
+  grid-template-columns:repeat(2,1fr);
 }
+
 .features{
-grid-template-columns:repeat(2,1fr)
+  grid-template-columns:repeat(2,1fr);
 }
+
+.order-grid{
+  grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:650px){
+
+header{
+  padding:10px 4%;
+}
+
+.brand-name{
+  font-size:17px;
+}
+
+.logo{
+  width:38px;
+  height:38px;
+}
+
 nav{
-display:none
+  display:none;
 }
+
+.hero{
+  min-height:570px;
+  padding:8% 6%;
 }
-@media(max-width:600px){
+
 .hero h1{
-font-size:45px
+  font-size:45px;
 }
+
 .products{
-gap:10px
+  grid-template-columns:1fr;
 }
+
 .product img{
-height:240px
+  height:330px;
 }
+
+.features{
+  grid-template-columns:1fr 1fr;
+}
+
 section{
-padding:50px 5%
+  padding:55px 5%;
 }
+
+.order-page{
+  padding:20px 4%;
+}
+
+.order-top h2{
+  font-size:28px;
+}
+
+.order-card{
+  padding:20px;
+}
+
+.header-actions{
+  gap:4px;
+}
+
+.account-btn{
+  display:none;
+}
+
 }
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
+
 <header>
 
+<a class="brand" href="#home">
+
 <div class="logo">
+SW
+</div>
+
+<div class="brand-name">
 Signature Wear
 </div>
+
+</a>
 
 <nav>
 <a href="#home">Home</a>
@@ -277,9 +753,21 @@ Signature Wear
 <a href="#about">About</a>
 </nav>
 
-<button class="cart" onclick="openCart()">
-🛒 Cart (<span id="count">0</span>)
+<div class="header-actions">
+
+<button
+class="account-btn"
+onclick="openAccount()">
+Account
 </button>
+
+<button
+class="cart-btn"
+onclick="openCart()">
+🛒 Cart (<span id="cartCount">0</span>)
+</button>
+
+</div>
 
 </header>
 
@@ -288,18 +776,24 @@ Signature Wear
 
 <section class="hero" id="home">
 
-<div>
+<div class="hero-content">
+
+<div class="hero-small">
+Signature Wear
+</div>
 
 <h1>
-Your Style your Signature.
+Your Style,<br>
+Your Signature.
 </h1>
 
 <p>
 Premium Pakistani suits for every special moment.
 </p>
 
-<button class="btn"
-onclick="location.href='#products'">
+<button
+class="btn"
+onclick="document.getElementById('products').scrollIntoView()">
 SHOP NOW
 </button>
 
@@ -313,14 +807,21 @@ SHOP NOW
 <section id="products">
 
 <div class="title">
-<p>Signature WEAR</p>
-<h2>Our Collection</h2>
+
+<small>SIGNATURE WEAR</small>
+
+<h2>
+Our Collection
+</h2>
+
 </div>
 
-<div class="products" id="productsBox">
+<div
+class="products"
+id="productsBox">
 
-<div class="loading-products">
-Loading products...
+<div class="loading">
+Loading collection...
 </div>
 
 </div>
@@ -332,59 +833,72 @@ Loading products...
 
 <section class="features" id="about">
 
-<div>
+<div class="feature">
 <h2>✦</h2>
 <h3>Premium Quality</h3>
-<p>Beautiful fabrics.</p>
+<p>Beautiful fabrics and elegant finishing.</p>
 </div>
 
-<div>
+<div class="feature">
 <h2>◇</h2>
 <h3>Elegant Designs</h3>
-<p>Modern & traditional.</p>
+<p>Modern and traditional styles.</p>
 </div>
 
-<div>
+<div class="feature">
 <h2>🚚</h2>
 <h3>Delivery</h3>
-<p>Across Pakistan.</p>
+<p>Delivery across Pakistan.</p>
 </div>
 
-<div>
+<div class="feature">
 <h2>↺</h2>
 <h3>Easy Exchange</h3>
-<p>Simple exchange.</p>
+<p>Simple and convenient exchange.</p>
 </div>
 
 </section>
 
 
+<!-- FOOTER -->
+
 <footer>
 
-<h2>Signature WEAR</h2>
-<p>Your style Your signature.</p>
-<br>
-<p>© 2026 Signature Wear</p>
+<h2>Signature Wear</h2>
+
+<p>
+Your style, your signature.
+</p>
+
+<p>
+© 2026 Signature Wear
+</p>
 
 </footer>
 
 
 <!-- CART -->
 
-<div class="cartbox" id="cartbox">
+<div
+class="cart-panel"
+id="cartPanel">
 
-<button class="close"
-onclick="closeCart()">×</button>
+<button
+class="close"
+onclick="closeCart()">
+×
+</button>
 
 <h2>Your Cart</h2>
 
 <div id="cartItems"></div>
 
-<div class="total">
-Total: Rs. <span id="total">0</span>
+<div class="cart-total">
+Total: Rs. <span id="cartTotal">0</span>
 </div>
 
-<button class="btn"
+<button
+class="btn"
 style="width:100%"
 onclick="openOrder()">
 PLACE ORDER
@@ -393,55 +907,247 @@ PLACE ORDER
 </div>
 
 
-<!-- ORDER FORM -->
+<!-- FULL SCREEN ORDER -->
 
-<div class="order" id="order">
+<div
+class="order-screen"
+id="orderScreen">
+
+<div class="order-page">
+
+<div class="order-top">
+
+<h2>
+Complete Your Order
+</h2>
+
+<button
+class="cancel-btn"
+onclick="cancelOrder()">
+CANCEL ORDER
+</button>
+
+</div>
+
+
+<div class="order-grid">
+
+<!-- CUSTOMER -->
+
+<div class="order-card">
+
+<h3>
+Customer Details
+</h3>
 
 <div class="form">
 
-<button class="close"
-onclick="closeOrder()">×</button>
-
-<h2>Complete Your Order</h2>
+<label>
+Full Name
+</label>
 
 <input
-id="name"
+id="customerName"
 placeholder="Your Name">
 
+<label>
+Phone Number
+</label>
+
 <input
-id="phone"
-placeholder="Phone Number">
+id="customerPhone"
+placeholder="03XX XXXXXXX">
+
+<label>
+Delivery Address
+</label>
 
 <textarea
-id="address"
+id="customerAddress"
 placeholder="Complete Delivery Address"></textarea>
 
+<label>
+Order Note
+</label>
+
 <textarea
-id="note"
-placeholder="Order Note (Optional)"></textarea>
+id="customerNote"
+placeholder="Optional"></textarea>
+
+
+<div class="payment-title">
+Payment Method
+</div>
+
+<div class="payment-options">
+
+<label class="payment-option">
+
+<input
+type="radio"
+name="payment"
+value="Cash on Delivery"
+checked>
+
+Cash on Delivery
+
+</label>
+
+
+<label class="payment-option">
+
+<input
+type="radio"
+name="payment"
+value="Online Payment">
+
+Online Payment
+
+</label>
+
+</div>
+
+<div class="payment-note">
+For online payment, select Online Payment.
+Our team will contact you and guide you regarding the payment method/details.
+</div>
+
+
+<div class="order-buttons">
+
+<button
+class="cancel-btn"
+onclick="cancelOrder()">
+CANCEL
+</button>
 
 <button
 class="btn"
-onclick="sendOrder()">
-ORDER ON WHATSAPP
+onclick="placeOrder()">
+PLACE ORDER
 </button>
 
 </div>
 
 </div>
 
+</div>
+
+
+<!-- SUMMARY -->
+
+<div class="order-card">
+
+<h3>
+Order Summary
+</h3>
+
+<div id="orderSummary"></div>
+
+<div class="summary-total">
+
+<span>
+Total
+</span>
+
+<span>
+Rs. <span id="orderTotal">0</span>
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ACCOUNT -->
+
+<div
+class="account-modal"
+id="accountModal">
+
+<div class="account-box">
+
+<button
+class="close"
+onclick="closeAccount()">
+×
+</button>
+
+<h2>
+My Account
+</h2>
+
+<div class="form">
+
+<label>Email</label>
+
+<input
+id="accountEmail"
+type="email"
+placeholder="Email address">
+
+<label>Password</label>
+
+<input
+id="accountPassword"
+type="password"
+placeholder="Password">
+
+</div>
+
+<div class="account-actions">
+
+<button
+class="btn"
+onclick="signIn()">
+LOGIN
+</button>
+
+<button
+class="cancel-btn"
+onclick="signUp()">
+CREATE ACCOUNT
+</button>
+
+</div>
+
+<div
+class="account-message"
+id="accountMessage">
+Account is optional. You can also order without creating an account.
+</div>
+
+</div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+class="toast"
+id="toast">
+</div>
+
 
 <script>
 
-/* =====================================
+/* ==========================================
    SUPABASE
-===================================== */
+========================================== */
 
 const SUPABASE_URL =
 "https://iworypmvibxrvtpfyhlm.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_920cNGEqkjL3IJawQtUhjg_645Ajv1j";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm9wG12hGJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
+
 const { createClient } =
 window.supabase;
 
@@ -452,122 +1158,176 @@ SUPABASE_KEY
 );
 
 
-/* =====================================
-   PRODUCTS FROM SUPABASE
-===================================== */
+/* ==========================================
+   FINAL WHATSAPP NUMBER
+========================================== */
+
+const WHATSAPP_NUMBER =
+"923222696768";
+
+
+/* ==========================================
+   STATE
+========================================== */
 
 let products = [];
+let cart = [];
+
+
+/* ==========================================
+   HELPERS
+========================================== */
+
+function esc(value=""){
+return String(value).replace(
+/[&<>"']/g,
+c=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+}[c])
+);
+}
+
+function money(value){
+return Number(value||0).toLocaleString();
+}
+
+function toast(message,error=false){
+
+const el =
+document.getElementById("toast");
+
+el.textContent=message;
+
+el.className =
+"toast show" +
+(error ? " error":"");
+
+clearTimeout(window.toastTimer);
+
+window.toastTimer =
+setTimeout(()=>{
+el.className="toast";
+},3000);
+
+}
+
+
+/* ==========================================
+   PRODUCTS FROM SUPABASE
+========================================== */
 
 async function loadProducts(){
 
 const box =
 document.getElementById("productsBox");
 
-box.innerHTML =
-`
-<div class="loading-products">
-Loading products...
-</div>
-`;
-
-try{
-
-const { data, error } =
+const {
+data,
+error
+} =
 await sb
 .from("products")
-.select(
-"id,name,price,description,category,size,colour,image"
-);
+.select("*")
+.order("id",{ascending:false});
 
 if(error){
-throw error;
-}
 
-products = data || [];
+console.error(error);
 
-displayProducts();
-
-}catch(error){
-
-console.error(
-"Products error:",
-error
-);
-
-box.innerHTML =
-`
+box.innerHTML=`
 <div class="no-products">
-Unable to load products.
-</div>
-`;
-
-}
-
-}
-
-
-/* =====================================
-   DISPLAY PRODUCTS
-===================================== */
-
-function displayProducts(){
-
-const box =
-document.getElementById(
-"productsBox"
-);
-
-if(!products.length){
-
-box.innerHTML =
-`
-<div class="no-products">
-No products available.
+Could not load products.
 </div>
 `;
 
 return;
+}
+
+products=data||[];
+
+renderProducts();
 
 }
 
-let html = "";
 
-products.forEach(
-(p,i)=>{
+/* ==========================================
+   RENDER PRODUCTS
+========================================== */
+
+function renderProducts(){
+
+const box =
+document.getElementById("productsBox");
+
+if(!products.length){
+
+box.innerHTML=`
+<div class="no-products">
+No products available yet.
+</div>
+`;
+
+return;
+}
+
+box.innerHTML =
+products.map(product=>{
 
 const image =
-p.image ||
-"https://image.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80";
+product.images ||
+"https://images.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=800&q=85";
 
-html += `
+return`
 
 <div class="product">
 
 <img
-src="${image}"
-alt="${p.name || "Product"}"
-onerror="this.src='https://image.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80'"
+src="${esc(image)}"
+alt="${esc(product.name)}"
+loading="lazy"
+onerror="this.src='https://images.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=800&q=85'"
 >
 
-<div class="info">
+<div class="product-info">
 
 <h3>
-${p.name || "Unnamed Product"}
+${esc(product.name)}
 </h3>
 
-<div class="price">
-Rs. ${Number(p.price || 0).toLocaleString()}
-</div>
-
 ${
-p.description
+product.description
 ?
-`<p class="description">${p.description}</p>`
-:
-""
+`<p class="product-description">
+${esc(product.description)}
+</p>`
+:""
 }
 
-<button onclick="add(${i})">
+${
+product.category ||
+product.size ||
+product.colour
+?
+`
+<div class="product-meta">
+${product.category ? `Category: ${esc(product.category)}`:""}
+${product.size ? ` • Size: ${esc(product.size)}`:""}
+${product.colour ? ` • Colour: ${esc(product.colour)}`:""}
+</div>
+`
+:""
+}
+
+<div class="price">
+Rs. ${money(product.price)}
+</div>
+
+<button
+onclick="addToCart('${String(product.id).replace(/'/g,"\\'")}')">
 ADD TO CART
 </button>
 
@@ -577,82 +1337,142 @@ ADD TO CART
 
 `;
 
-});
-
-box.innerHTML =
-html;
+}).join("");
 
 }
 
 
-/* =====================================
+/* ==========================================
    CART
-===================================== */
+========================================== */
 
-let cart = [];
+function addToCart(id){
 
-
-function add(i){
-
-if(!products[i]){
-return;
-}
-
-cart.push(
-products[i]
+const product =
+products.find(
+p=>String(p.id)===String(id)
 );
 
-update();
+if(!product)return;
+
+const existing =
+cart.find(
+item=>String(item.product.id)===String(id)
+);
+
+if(existing){
+existing.quantity++;
+}else{
+cart.push({
+product,
+quantity:1
+});
+}
+
+updateCart();
 
 openCart();
 
+toast("Product added to cart.");
+
 }
 
 
-function update(){
+function changeQuantity(index,amount){
 
-document.getElementById(
-"count"
-).innerText =
-cart.length;
+if(!cart[index])return;
 
-let html = "";
-let total = 0;
+cart[index].quantity += amount;
 
-cart.forEach(
-(p,i)=>{
+if(cart[index].quantity<=0){
+cart.splice(index,1);
+}
 
-const price =
-Number(p.price || 0);
+updateCart();
 
-total += price;
+}
 
-const image =
-p.image ||
-"https://image.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=800&q=80";
 
-html += `
+function removeItem(index){
 
-<div class="cartitem">
+cart.splice(index,1);
+
+updateCart();
+
+}
+
+
+function updateCart(){
+
+const count =
+cart.reduce(
+(sum,item)=>sum+item.quantity,
+0
+);
+
+document.getElementById("cartCount")
+.textContent=count;
+
+let total=0;
+
+let html="";
+
+cart.forEach((item,index)=>{
+
+const p=item.product;
+
+const price=
+Number(p.price||0);
+
+const itemTotal=
+price*item.quantity;
+
+total+=itemTotal;
+
+const image=
+p.images ||
+"https://images.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=300&q=80";
+
+html+=`
+
+<div class="cart-item">
 
 <img
-src="${image}"
-alt="${p.name || "Product"}"
+src="${esc(image)}"
+alt=""
 >
 
-<div>
+<div class="cart-info">
 
 <b>
-${p.name || "Product"}
+${esc(p.name)}
 </b>
 
 <p>
-Rs. ${price.toLocaleString()}
+Rs. ${money(price)}
 </p>
+
+<div class="quantity">
+
+<button
+onclick="changeQuantity(${index},-1)">
+−
+</button>
+
+<span>
+${item.quantity}
+</span>
+
+<button
+onclick="changeQuantity(${index},1)">
++
+</button>
+
+</div>
 
 <button
 class="remove"
-onclick="remove(${i})">
+onclick="removeItem(${index})">
 Remove
 </button>
 
@@ -664,245 +1484,413 @@ Remove
 
 });
 
-document.getElementById(
-"cartItems"
-).innerHTML =
+document.getElementById("cartItems")
+.innerHTML =
 html ||
 "<p>Your cart is empty.</p>";
 
-document.getElementById(
-"total"
-).innerText =
-total.toLocaleString();
-
-}
-
-
-function remove(i){
-
-cart.splice(
-i,
-1
-);
-
-update();
+document.getElementById("cartTotal")
+.textContent=
+money(total);
 
 }
 
 
 function openCart(){
 
-document.getElementById(
-"cartbox"
-)
-.classList
-.add("open");
+document
+.getElementById("cartPanel")
+.classList.add("open");
 
 }
 
 
 function closeCart(){
 
-document.getElementById(
-"cartbox"
-)
-.classList
-.remove("open");
+document
+.getElementById("cartPanel")
+.classList.remove("open");
 
 }
 
 
-/* =====================================
-   ORDER FORM
-===================================== */
+/* ==========================================
+   ORDER
+========================================== */
 
 function openOrder(){
 
-if(cart.length === 0){
+if(!cart.length){
 
-alert(
-"Please add a product first."
+toast(
+"Please add a product first.",
+true
 );
 
 return;
-
 }
 
-document.getElementById(
-"order"
-)
-.classList
-.add("open");
+renderOrderSummary();
 
-}
+closeCart();
 
+document
+.getElementById("orderScreen")
+.classList.add("open");
 
-function closeOrder(){
-
-document.getElementById(
-"order"
-)
-.classList
-.remove("open");
+document.body.style.overflow="hidden";
 
 }
 
 
-/* =====================================
-   WHATSAPP / ORDER
-===================================== */
+function cancelOrder(){
 
-function sendOrder(){
+document
+.getElementById("orderScreen")
+.classList.remove("open");
+
+document.body.style.overflow="";
+
+}
+
+
+function renderOrderSummary(){
+
+let total=0;
+
+let html="";
+
+cart.forEach(item=>{
+
+const price=
+Number(item.product.price||0);
+
+const itemTotal=
+price*item.quantity;
+
+total+=itemTotal;
+
+html+=`
+
+<div class="summary-item">
+
+<span>
+${esc(item.product.name)}
+× ${item.quantity}
+</span>
+
+<strong>
+Rs. ${money(itemTotal)}
+</strong>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("orderSummary")
+.innerHTML=html;
+
+document.getElementById("orderTotal")
+.textContent=
+money(total);
+
+}
+
+
+/* ==========================================
+   PLACE ORDER
+========================================== */
+
+async function placeOrder(){
 
 const name =
-document
-.getElementById("name")
-.value
-.trim();
+document.getElementById("customerName")
+.value.trim();
 
 const phone =
-document
-.getElementById("phone")
-.value
-.trim();
+document.getElementById("customerPhone")
+.value.trim();
 
 const address =
-document
-.getElementById("address")
-.value
-.trim();
+document.getElementById("customerAddress")
+.value.trim();
 
 const note =
-document
-.getElementById("note")
-.value
-.trim();
+document.getElementById("customerNote")
+.value.trim();
 
-if(
-!name ||
-!phone ||
-!address
-){
+const payment =
+document.querySelector(
+'input[name="payment"]:checked'
+)?.value ||
+"Cash on Delivery";
 
-alert(
-"Please enter your name, phone and address."
+
+if(!name || !phone || !address){
+
+toast(
+"Please enter your name, phone and address.",
+true
 );
 
 return;
-
 }
 
-let total = 0;
+if(!cart.length){
 
-const items =
-cart.map(
-p=>{
+toast(
+"Your cart is empty.",
+true
+);
 
-const price =
-Number(p.price || 0);
+return;
+}
 
-total += price;
 
-return {
-name:
-p.name,
-price:
-price
-};
+let total=0;
+
+const orderLines =
+cart.map(item=>{
+
+const price=
+Number(item.product.price||0);
+
+const itemTotal=
+price*item.quantity;
+
+total+=itemTotal;
+
+return `${item.product.name} x ${item.quantity} - Rs. ${money(itemTotal)}`;
+
+}).join("\n");
+
+
+/*
+  Existing orders table columns are used here:
+  customer_name
+  phone
+  address
+  product_name
+
+  Payment method and other full details are also
+  included in the WhatsApp order message.
+*/
+
+const {
+error
+} =
+await sb
+.from("orders")
+.insert({
+
+customer_name:name,
+phone:phone,
+address:address,
+product_name:orderLines
 
 });
 
 
+if(error){
+
+console.error(error);
+
+toast(
+"Order could not be placed. Please try again.",
+true
+);
+
+return;
+}
+
+
+/* ==========================================
+   WHATSAPP ORDER
+========================================== */
+
+const message =
+`*NEW ORDER - SIGNATURE WEAR*
+
+Customer:
+${name}
+
+Phone:
+${phone}
+
+Address:
+${address}
+
+Payment Method:
+${payment}
+
+Products:
+${orderLines}
+
+Total:
+Rs. ${money(total)}
+
+${note ? `Order Note:
+${note}` : ""}
+
+*Order Status: Order Placed*`;
+
+
+const whatsappURL =
+"https://wa.me/" +
+WHATSAPP_NUMBER +
+"?text=" +
+encodeURIComponent(message);
+
+
+/* ==========================================
+   CLEAR CART
+========================================== */
+
+cart=[];
+
+updateCart();
+
+document.getElementById("customerName").value="";
+document.getElementById("customerPhone").value="";
+document.getElementById("customerAddress").value="";
+document.getElementById("customerNote").value="";
+
+cancelOrder();
+
+toast(
+"Order placed successfully."
+);
+
+
 /*
-   Order API
-   Keep your existing backend endpoint.
+  Customer's WhatsApp opens with the order
+  already prepared for your WhatsApp Business number.
 */
 
-fetch(
-"http://localhost:3000/order",
-{
-method:"POST",
-
-headers:{
-"Content-Type":
-"application/json"
-},
-
-body:
-JSON.stringify({
-
-name:
-name,
-
-phone:
-phone,
-
-address:
-address,
-
-note:
-note,
-
-items:
-items,
-
-total:
-total
-
-})
-
-}
-)
-.then(
-response =>
-response.json()
-)
-.then(
-data=>{
-
-if(data.success){
-
-alert(
-"Order placed successfully!"
-);
-
-closeOrder();
-
-}else{
-
-alert(
-"Order could not be placed."
-);
+window.location.href=whatsappURL;
 
 }
 
-}
-)
-.catch(
-error=>{
 
-console.error(
-"Order error:",
+/* ==========================================
+   OPTIONAL CUSTOMER ACCOUNT
+========================================== */
+
+function openAccount(){
+
+document
+.getElementById("accountModal")
+.classList.add("open");
+
+}
+
+
+function closeAccount(){
+
+document
+.getElementById("accountModal")
+.classList.remove("open");
+
+}
+
+
+async function signUp(){
+
+const email =
+document.getElementById("accountEmail")
+.value.trim();
+
+const password =
+document.getElementById("accountPassword")
+.value;
+
+const msg =
+document.getElementById("accountMessage");
+
+if(!email || !password){
+
+msg.textContent=
+"Enter email and password.";
+
+return;
+}
+
+const {
 error
-);
+} =
+await sb.auth.signUp({
+email,
+password
+});
 
-alert(
-"Unable to connect to the order server."
-);
+if(error){
+
+msg.textContent=
+error.message;
+
+return;
+}
+
+msg.textContent=
+"Account created. Check your email if confirmation is enabled.";
 
 }
-);
+
+
+async function signIn(){
+
+const email =
+document.getElementById("accountEmail")
+.value.trim();
+
+const password =
+document.getElementById("accountPassword")
+.value;
+
+const msg =
+document.getElementById("accountMessage");
+
+if(!email || !password){
+
+msg.textContent=
+"Enter email and password.";
+
+return;
+}
+
+const {
+error
+} =
+await sb.auth.signInWithPassword({
+email,
+password
+});
+
+if(error){
+
+msg.textContent=
+error.message;
+
+return;
+}
+
+msg.textContent=
+"Logged in successfully.";
+
+toast("Welcome back.");
 
 }
 
 
-/* =====================================
+/* ==========================================
    START
-===================================== */
+========================================== */
 
 loadProducts();
 
-update();
+updateCart();
 
 </script>
 

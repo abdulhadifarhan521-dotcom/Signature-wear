@@ -54,7 +54,6 @@ app.get("/products", (req, res) => {
 app.post("/admin/products", upload.single("image"), (req, res) => {
 
   const products = JSON.parse(fs.readFileSync(productsFile, "utf8"));
-
   const product = {
     id: Date.now(),
     name: req.body.name,

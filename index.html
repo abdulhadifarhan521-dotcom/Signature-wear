@@ -3,7 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Signature Wear</title>
+
+<!-- WEBSITE SHARE PREVIEW -->
+<meta property="og:title" content="Signature Wear">
+<meta property="og:description" content="Premium Pakistani suits for every special moment.">
+<meta property="og:image" content="images/logo.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Signature Wear">
+<meta name="twitter:description" content="Premium Pakistani suits for every special moment.">
+<meta name="twitter:image" content="images/logo.png">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -60,19 +71,8 @@ header{
   height:45px;
   border:1px solid var(--gold);
   object-fit:contain;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:var(--gold);
-  font-family:Georgia,serif;
-  font-size:13px;
-  letter-spacing:1px;
+  display:block;
 }
-
-/*
-  Jab tumhara actual Signature Wear logo image mile,
-  is div ko image se replace kar denge.
-*/
 
 .brand-name{
   font-family:Georgia,serif;
@@ -126,11 +126,6 @@ nav a:hover{
   color:#fff;
   position:relative;
   overflow:hidden;
-
-  /*
-    MODEL IMAGE:
-    Yahan tumhari final model pic lagegi.
-  */
 
   background-image:
     linear-gradient(90deg,
@@ -737,9 +732,10 @@ section{
 
 <a class="brand" href="#home">
 
-<div class="logo">
-SW
-</div>
+<img
+class="logo"
+src="images/logo.png"
+alt="Signature Wear Logo">
 
 <div class="brand-name">
 Signature Wear
@@ -1159,7 +1155,7 @@ SUPABASE_KEY
 
 
 /* ==========================================
-   FINAL WHATSAPP NUMBER
+   WHATSAPP NUMBER
 ========================================== */
 
 const WHATSAPP_NUMBER =
@@ -1667,16 +1663,7 @@ return `${item.product.name} x ${item.quantity} - Rs. ${money(itemTotal)}`;
 }).join("\n");
 
 
-/*
-  Existing orders table columns are used here:
-  customer_name
-  phone
-  address
-  product_name
-
-  Payment method and other full details are also
-  included in the WhatsApp order message.
-*/
+/* SAVE ORDER TO SUPABASE */
 
 const {
 error
@@ -1707,45 +1694,8 @@ return;
 
 
 /* ==========================================
-   WHATSAPP ORDER
-========================================== */
-
-const message =
-`*NEW ORDER - SIGNATURE WEAR*
-
-Customer:
-${name}
-
-Phone:
-${phone}
-
-Address:
-${address}
-
-Payment Method:
-${payment}
-
-Products:
-${orderLines}
-
-Total:
-Rs. ${money(total)}
-
-${note ? `Order Note:
-${note}` : ""}
-
-*Order Status: Order Placed*`;
-
-
-const whatsappURL =
-"https://wa.me/" +
-WHATSAPP_NUMBER +
-"?text=" +
-encodeURIComponent(message);
-
-
-/* ==========================================
-   CLEAR CART
+   ORDER SUCCESS
+   WHATSAPP WILL NOT OPEN
 ========================================== */
 
 cart=[];
@@ -1762,14 +1712,6 @@ cancelOrder();
 toast(
 "Order placed successfully."
 );
-
-
-/*
-  Customer's WhatsApp opens with the order
-  already prepared for your WhatsApp Business number.
-*/
-
-window.location.href=whatsappURL;
 
 }
 

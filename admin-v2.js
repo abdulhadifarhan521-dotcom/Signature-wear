@@ -10,7 +10,7 @@ const SUPABASE_URL =
   "https://iworypmvibxrvtpfyhlm.supabase.co";
 
 const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm9jG12aGJ4cnZ0cGZ5aGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MjIzMDEsImV4cCI6MjEwMjE5ODMwMX0.uLliY8v9RkqZIepCbjbeVKYg0KavagsAB9uUyff8Jdo";
+  "sb_publishable_920cNGEqkjL3IJawQtUhjg_645Ajv1j";
 
 const { createClient } = window.supabase;
 
